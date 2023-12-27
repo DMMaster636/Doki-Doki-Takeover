@@ -2013,10 +2013,10 @@ class PlayState extends MusicBeatState
 
 		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && !SaveData.lowEnd)
 		{
-			staticlol = new StaticShader();
-			camGame.setFilters([new ShaderFilter(staticlol)]);
-			camCache.setFilters([new ShaderFilter(staticlol)]);
-			staticlol.alpha.value = [staticAlpha];
+			//staticlol = new StaticShader();
+			//camGame.setFilters([new ShaderFilter(staticlol)]);
+			// camCache.setFilters([new ShaderFilter(staticlol)]);
+			//staticlol.alpha.value = [staticAlpha];
 
 			daStatic = new BGSprite('daSTAT', 'preload', 0, 0, 1.0, 1.0, ['staticFLASH'], true);
 			daStatic.cameras = [camHUD];
@@ -2245,6 +2245,19 @@ class PlayState extends MusicBeatState
 				addCharacterToList("sayoro-poem");
 				addCharacterToList("bf-sad");
 				addCharacterToList("bf-poem");
+			case 'markov':
+				addCharacterToList("yuri-closet");
+				addCharacterToList("yuri-closeup");
+				addCharacterToList("bf-sad");
+				addCharacterToList("gf-markov");
+			case 'home':
+				addCharacterToList("natsuki");
+				addCharacterToList("natsuki-sad");
+				addCharacterToList("bf-sad");
+				addCharacterToList("natsuki-home");
+				addCharacterToList("bf-poem");
+				addCharacterToList("gf-markov");
+
 		}
 
 		// REPOSITIONING PER STAGE
@@ -7883,10 +7896,19 @@ class PlayState extends MusicBeatState
 							metadataDisplay.tweenOut();
 						case 288:
 							sketchswap(2);
+							set_songSpeed(1.4);
 						case 544:
 							sketchswap(3);
+							set_songSpeed(2.8);
 						case 800:
 							sketchswap(2);
+							set_songSpeed(1.4);
+						case 1056:
+							set_songSpeed(1.8);
+						case 1100:
+							set_songSpeed(2.4);
+						case 1184:
+							set_songSpeed(2.8);
 						case 1312:
 							sketchswap(1);
 						case 1824:
@@ -7894,8 +7916,30 @@ class PlayState extends MusicBeatState
 						case 2336:
 							sketchswap(1);
 					}
-			}
+				case 'markov':
+					switch (curStep)
+					{
+						case 1:
+							markovswap(0);
+						case 117:
+							dad.playAnim('appear', true);
+						case 433:
+							markovswap(2);
+						case 447:
+							set_songSpeed(2.8);
+						case 449:
+							markovswap(1);
+					//	case 800:
+					//		sketchswap(2);
+					//	case 1312:
+					//		sketchswap(1);
+					//	case 1824:
+					//		sketchswap(0);
+					//	case 2336:
+					//		sketchswap(1);
+					}
 		}
+	}
 
 		// have lyrics fade in and out if possible
 		if (hasLyrics && lyrics != null)
@@ -7917,7 +7961,8 @@ class PlayState extends MusicBeatState
 			"Error",
 			"Unauthorized",
 			"Unknown",
-			"Unspecified"
+			"Unspecified",
+			"MarkovEyes"
 		],
 		[
 			"Access",
@@ -9055,6 +9100,7 @@ class PlayState extends MusicBeatState
 				gf.visible = true;
 				addcharacter("sayori-sad", 1);
 				addcharacter("bf-sad", 0);
+				gf.playAnim('necksnap', true);
 
 				// thank u vs sunday code! (credits to bbpanzu)
 				remove(strumLineNotes);
@@ -9112,6 +9158,7 @@ class PlayState extends MusicBeatState
 				gf.visible = true;
 				addcharacter("sayori-sad", 1);
 				addcharacter("bf-sad", 0);
+				gf.playAnim('necksnap', true);
 
 				clubmainlight.visible = false;
 				closet.visible = false;
@@ -9124,6 +9171,7 @@ class PlayState extends MusicBeatState
 				gf.visible = true;
 				addcharacter("sayori", 1);
 				addcharacter("bf-doki", 0);
+				gf.playAnim('necksnap', false);
 
 				clubmainlight.visible = true;
 				closet.visible = true;
@@ -9132,6 +9180,77 @@ class PlayState extends MusicBeatState
 				bg.visible = false;
 		}
 	}
+
+		function markovswap(swap:Int)
+		{
+			switch (swap)
+			{
+				case 0:
+					isPoemUI = false;
+					defaultCamZoom = 1;
+
+					gf.visible = true;
+					addcharacter("yuri-closet", 1);
+					addcharacter("bf-sad", 0);
+
+					// thank u vs sunday code! (credits to bbpanzu)
+					remove(strumLineNotes);
+					strumLineNotes = new FlxTypedGroup<StrumNote>();
+					strumLineNotes.cameras = [camHUD];
+					add(strumLineNotes);
+
+					playerStrums = new FlxTypedGroup<StrumNote>();
+					opponentStrums = new FlxTypedGroup<StrumNote>();
+
+					curStyle = SONG.noteStyle;
+					generateStaticArrows(0, SONG.noteStyle, false);
+					generateStaticArrows(1, SONG.noteStyle, false);
+
+					healthBarBG.loadGraphic(Paths.image('healthBar', 'preload'));
+					healthBarBG.offset.set(0, 0);
+
+					positionDisplay.songPosBG.loadGraphic(Paths.image('timeBar', 'preload'));
+					positionDisplay.songPosBG.offset.set(0, 0);
+
+					bg.visible = true;
+					boyfriend.visible = false;
+					dad.visible = true;
+					gf.visible = false;
+				case 1:
+					isPoemUI = false;
+					defaultCamZoom = 1.2;
+
+					gf.visible = true;
+					addcharacter("yuri-crazy", 1);
+					addcharacter("bf-sad", 0);
+					gf.playAnim('necksnap', true);
+
+
+					bg.visible = true;
+					dad.visible = true;
+					boyfriend.visible = true;
+				case 2:
+					defaultCamZoom = 1;
+
+					gf.visible = false;
+					addcharacter("yuri-closeup", 1);
+					addcharacter("bf-sad", 0);
+
+					bg.visible = true;
+					boyfriend.visible = false;
+					dad.visible = true;
+				case 3:
+					defaultCamZoom = 0.75;
+
+					gf.visible = true;
+					addcharacter("yuri-crazy", 1);
+					addcharacter("bf-sad", 0);
+					addcharacter("gf-markov", 2);
+
+					bg.visible = true;
+					boyfriend.visible = true;
+			}
+		}
 	// Bad Ending Function end here
 
 	function oneMore()

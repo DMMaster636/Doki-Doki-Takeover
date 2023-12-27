@@ -26,7 +26,7 @@ jobs:
       - name: Install Libraries
         run: |
             haxelib setup C:/haxelib
-            haxelib install hxcpp > /dev/null --quiet
+            haxelib install hxcpp
             haxelib install hmm --quiet
             haxelib run hmm install
 

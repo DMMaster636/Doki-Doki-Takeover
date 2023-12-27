@@ -6,28 +6,38 @@
 			"type": "haxelib"
 		},
 		{
-			"name": "lime",
+			"name": "hxcpp-debug-server",
 			"type": "haxelib"
+		},
+		{
+			"name": "lime",
+			"type": "haxelib",
+			"version": "8.0.1"
 		},
 		{
 			"name": "openfl",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "9.2.1"
 		},
 		{
 			"name": "flixel",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "5.3.0"
 		},
 		{
 			"name": "flixel-addons",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "3.0.2"
 		},
 		{
 			"name": "flixel-ui",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "2.5.0"
 		},
 		{
 			"name": "flixel-tools",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "1.5.1"
 		},
 		{
 			"name": "firetongue",
@@ -38,10 +48,14 @@
 			"type": "haxelib"
 		},
 		{
+			"name": "hscript",
+			"type": "haxelib"
+		},
+		{
 			"name": "hxCodec",
 			"type": "git",
 			"ref": "main",
-			"url": "https://github.com/polybiusproxy/hxCodec.git"
+			"url": "https://github.com/Raltyro/hxCodec.git"
 		},
 		{
 			"name": "discord_rpc",

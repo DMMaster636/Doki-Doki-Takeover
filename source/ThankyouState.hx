@@ -69,11 +69,7 @@ class ThankyouState extends MusicBeatState
 				onComplete: function(twn:FlxTween)
 				{
 					funnynote.kill();
-
-					if (!SaveData.badEndingSelected)
-						FlxG.switchState(new CreditsState());
-					else
-						FlxG.switchState(new CreditsStateBad());
+					FlxG.switchState(new CreditsState());
 				}
 			});
 		}
