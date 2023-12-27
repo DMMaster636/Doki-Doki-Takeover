@@ -28,9 +28,6 @@ import Discord.DiscordClient;
 #if FEATURE_GAMEJOLT
 import GameJolt.GameJoltAPI;
 #end
-#if FEATURE_MP4
-import hxcodec.VideoHandler as NetStreamHandler;
-#end
 
 using StringTools;
 
@@ -368,16 +365,16 @@ class DokiStoryState extends MusicBeatState
 				default:
 					LoadingState.loadAndSwitchState(new PlayState(), true, true);
 				case 1:
-					#if (FEATURE_MP4 || FEATURE_VIDEO)
-					var video:NetStreamHandler = new NetStreamHandler();
+					#if FEATURE_MP4
+					var video:VideoHandler = new VideoHandler();
 					video.canSkip = SaveData.beatSayori;
 					video.skipKeys = [FlxKey.ESCAPE, FlxKey.ENTER];
-					video.playVideo(Paths.video('sayointro'), false, true);
-					video.finishCallback = function()
+					video.play(Paths.video('sayointro'));
+					video.onEndReached.add(function()
 					{
 						FlxG.camera.fade(FlxColor.BLACK, 0, false);
 						LoadingState.loadAndSwitchState(new PlayState(), true, true);
-					}
+					});
 					#else
 					LoadingState.loadAndSwitchState(new PlayState(), true, true);
 					#end

@@ -39,11 +39,7 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
-#if (flixel >= "5.3.0")
 import flixel.sound.FlxSound;
-#else
-import flixel.system.FlxSound;
-#end
 import flixel.text.FlxText;
 import flixel.addons.text.FlxTypeText;
 import flixel.tweens.FlxEase;
@@ -75,8 +71,7 @@ import sys.FileSystem;
 import GameJolt.GameJoltAPI;
 #end
 #if FEATURE_MP4
-import hxcodec.VideoHandler as NetStreamHandler;
-import hxcodec.VideoSprite;
+import hxcodec.flixel.FlxVideoSprite as VideoSprite;
 #end
 
 using StringTools;
@@ -957,7 +952,7 @@ class PlayState extends MusicBeatState
 						if (SaveData.shaders)
 						{
 							var funnyShader:FishEyeShader = new FishEyeShader();
-							camGame.setFilters([new ShaderFilter(funnyShader)]);
+							camGame.filters = [new ShaderFilter(funnyShader)];
 						}
 
 						staticcredits = new FlxSprite(0, 0);
@@ -1063,7 +1058,7 @@ class PlayState extends MusicBeatState
 						if (SaveData.shaders)
 						{
 							var funnyShader:FishEyeShader = new FishEyeShader();
-							camGame.setFilters([new ShaderFilter(funnyShader)]);
+							camGame.filters = [new ShaderFilter(funnyShader)];
 						}
 					}
 
@@ -1538,8 +1533,11 @@ class PlayState extends MusicBeatState
 					clubroom.updateHitbox();
 					add(clubroom);
 
-					if (!SaveData.lowEnd && SONG.song.toLowerCase() == 'shrinking violet')
+					if (!SaveData.lowEnd && SONG.song.toLowerCase().startsWith('shrinking violet'))
 					{
+						if (SONG.song.toLowerCase().endsWith('-alt'))
+							clubroom.loadGraphic(Paths.image('musicroom/Music_RoomSpooky', 'doki'));
+
 						sparkleBG = new FlxBackdrop(Paths.image('clubroom/YuriSparkleBG', 'doki'));
 						sparkleBG.scrollFactor.set(0.1, 0);
 						sparkleBG.velocity.set(-16, 0);
@@ -1565,11 +1563,12 @@ class PlayState extends MusicBeatState
 					lightoverlay.blend = ADD;
 
 					// love n' funkin'
-					if (SONG.song.toLowerCase() == 'love n funkin')
+					if (SONG.song.toLowerCase().startsWith('love n funkin'))
 					{
 						clubroom.loadGraphic(Paths.image('musicroom/Music_RoomLNF', 'doki'));
-
-						poemVideo = new FlxAnimate(0, 0, Paths.getLibraryPath('images/notepad/handoatlas', 'doki'));
+						// picohandoatlas
+						var poemSprite:String = (SONG.song.toLowerCase().endsWith('-alt') ? 'images/notepad/picohandoatlas' : 'images/notepad/handoatlas');
+						poemVideo = new FlxAnimate(0, 0, Paths.getLibraryPath(poemSprite, 'doki'));
 						poemVideo.showPivot = false;
 						poemVideo.anim.addBySymbol('hando', 'lnf video');
 						poemVideo.anim.play('hando');
@@ -1595,12 +1594,11 @@ class PlayState extends MusicBeatState
 						if (SaveData.shaders)
 						{
 							fishy.preset = 1;
-							camGame.setFilters([new ShaderFilter(fishy)]);
+							camGame.filters = [new ShaderFilter(fishy)];
 						}
 
 						rainBG = new VideoSprite();
-						rainBG.playVideo(Paths.video('rain'), true);
-						rainBG.bitmap.canSkip = false;
+						rainBG.play(Paths.video('rain'), true);
 						rainBG.scrollFactor.set();
 						rainBG.setGraphicSize(Std.int(rainBG.width / defaultCamZoom));
 						rainBG.updateHitbox();
@@ -1642,8 +1640,7 @@ class PlayState extends MusicBeatState
 					if (!SaveData.lowEnd)
 					{
 						testVM = new VideoSprite();
-						testVM.playVideo(Paths.video('testvm'), true);
-						testVM.bitmap.canSkip = false;
+						testVM.play(Paths.video('testvm'), true);
 						testVM.scrollFactor.set();
 						testVM.setGraphicSize(Std.int(testVM.width / defaultCamZoom));
 						testVM.updateHitbox();
@@ -1739,8 +1736,7 @@ class PlayState extends MusicBeatState
 					if (!SaveData.lowEnd)
 					{
 						crackBG = new VideoSprite(-10, -10);
-						crackBG.playVideo(Paths.video('crackBG'), true);
-						crackBG.bitmap.canSkip = false;
+						crackBG.play(Paths.video('crackBG'), true);
 						crackBG.scrollFactor.set(0.3, 0.3);
 						crackBG.setGraphicSize(Std.int(crackBG.width / defaultCamZoom));
 						crackBG.updateHitbox();
@@ -2037,13 +2033,14 @@ class PlayState extends MusicBeatState
 			add(redStatic);
 		}
 
-		if ((SONG.song.toLowerCase() == 'baka' || SONG.song.toLowerCase() == 'hot air balloon') && !SaveData.lowEnd)
+		if ((SONG.song.toLowerCase().startsWith('baka') || SONG.song.toLowerCase() == 'hot air balloon') && !SaveData.lowEnd)
 		{
 			bakaOverlay = new FlxSprite(0, 0);
 			bakaOverlay.frames = Paths.getSparrowAtlas('clubroom/BakaBGDoodles', 'doki');
 			bakaOverlay.antialiasing = SaveData.globalAntialiasing;
 			bakaOverlay.animation.addByPrefix('normal', 'Normal Overlay', 24, true);
 			bakaOverlay.animation.addByPrefix('party rock is', 'Rock Overlay', 24, true);
+			bakaOverlay.animation.addByPrefix('FUCK', 'Tank Overlay', 24, true);
 			bakaOverlay.animation.play('normal');
 			bakaOverlay.scrollFactor.set();
 			bakaOverlay.visible = false;
@@ -2053,6 +2050,11 @@ class PlayState extends MusicBeatState
 			bakaOverlay.updateHitbox();
 			bakaOverlay.screenCenter();
 			add(bakaOverlay);
+
+			whiteflash.makeGraphic(FlxG.width * 3, FlxG.height * 3, 0xFFFDC1FF);
+			whiteflash.alpha = 0.0001;
+			whiteflash.cameras = [camHUD];
+			add(whiteflash);
 		}
 
 		if (SONG.song.toLowerCase() == 'home' && !SaveData.lowEnd)
@@ -2095,7 +2097,7 @@ class PlayState extends MusicBeatState
 
 				if (!SONG.player1.startsWith('sayori') && !SONG.player2.startsWith('sayori') && SONG.gfVersion != 'sayo-speaker')
 					{
-						if (isStoryMode || Character.loadaltcostume && SONG.gfVersion == 'gf-realdoki' && SaveData.gfcostume != "sayo")
+						if (isStoryMode || Character.loadaltcostume && (SONG.gfVersion == 'gf-realdoki' && SaveData.gfcostume != "sayo" || SONG.gfVersion != 'gf-realdoki'))
 							bgDokis.add(sayori);
 					}
 				if (!SONG.player1.startsWith('natsuki') && !SONG.player2.startsWith('natsuki'))
@@ -2113,76 +2115,38 @@ class PlayState extends MusicBeatState
 				bgDokis.add(natsuki);
 			}
 
-			if (curStage == 'dokiclubroom')
+			switch (SONG.player2)
 			{
-				switch (SONG.player2)
-				{
-					case "sayori":
-						{
-							yuri.setPosition(-74, 176);
-							natsuki.setPosition(1088, 275);
-						}
-					case "natsuki":
-						{
-							sayori.setPosition(1050, 250);
-							yuri.setPosition(130, 176);
-							
-						}
-					case "yuri" | "yuri-crazy":
-						{
-							sayori.setPosition(-49, 247);
-							natsuki.setPosition(1044, 290);
-						}
-					case "monika":
-						{
-							sayori.setPosition(134, 246);
-							yuri.setPosition(-74, 176);
-							natsuki.setPosition(1044, 290);
-							
-						}
-					case "protag":
-						{
-							sayori.setPosition(-49, 247);
-							yuri.setPosition(379, 176);
-							natsuki.setPosition(1044, 290);
-							monika.setPosition(1207, 173);
-						}	
-				}
+				case "natsuki":
+					{
+						sayori.setPosition(-49, 247);
+						yuri.setPosition(1044, 178);
+						protag.setPosition(379, 152);
+						monika.setPosition(1207, 173);
+					}
+				case "yuri" | "yuri-crazy":
+					{
+						sayori.setPosition(-49, 247);
+						natsuki.setPosition(1044, 290);
+						protag.setPosition(379, 152);
+						monika.setPosition(1207, 173);
+					}
+				case "sayori":
+					{
+						yuri.setPosition(-74, 176);
+						natsuki.setPosition(1044, 290);
+						protag.setPosition(379, 152);
+						monika.setPosition(1207, 173);
+					}
+				case "monika":
+					{
+						sayori.setPosition(-49, 247);
+						yuri.setPosition(1044, 178);
+						natsuki.setPosition(1247, 303);
+						protag.setPosition(150, 152);
+					}
 			}
-			else
-			{
-				switch (SONG.player2)
-				{
-					case "natsuki":
-						{
-							sayori.setPosition(-49, 247);
-							yuri.setPosition(1044, 178);
-							protag.setPosition(379, 152);
-							monika.setPosition(1207, 173);
-						}
-					case "yuri" | "yuri-crazy":
-						{
-							sayori.setPosition(-49, 247);
-							natsuki.setPosition(1044, 290);
-							protag.setPosition(379, 152);
-							monika.setPosition(1207, 173);
-						}
-					case "sayori":
-						{
-							yuri.setPosition(-74, 176);
-							natsuki.setPosition(1044, 290);
-							protag.setPosition(379, 152);
-							monika.setPosition(1207, 173);
-						}
-					case "monika":
-						{
-							sayori.setPosition(-49, 247);
-							yuri.setPosition(1044, 178);
-							natsuki.setPosition(1247, 303);
-							protag.setPosition(150, 152);
-						}
-				}
-			}
+			
 		}
 
 		for (i in 1...4)
@@ -2448,11 +2412,11 @@ class PlayState extends MusicBeatState
 				if (!SaveData.lowEnd)
 				{
 					bloomlol = new BloomShader(0.1, 0.005, 0.8, 7.0);
-					camGame.setFilters([new ShaderFilter(glitchy), new ShaderFilter(bloomlol)]);
+					camGame.filters = [new ShaderFilter(glitchy), new ShaderFilter(bloomlol)];
 				}
 				else
 				{
-					camGame.setFilters([new ShaderFilter(glitchy)]);
+					camGame.filters = [new ShaderFilter(glitchy)];
 				}
 			}
 
@@ -2461,13 +2425,13 @@ class PlayState extends MusicBeatState
 				if (curStage == 'dokifestival')
 				{
 					bloomlol = new BloomShader(0.1, 0.005, 0.8, 7.0);
-					camGame.setFilters([new ShaderFilter(bloomlol)]);
+					camGame.filters = [new ShaderFilter(bloomlol)];
 				}
 
 				if (curStage == 'clubroomevil')
 				{
 					bloomlol = new BloomShader(0.1, 0.005, 0.95, 8.0);
-					camGame.setFilters([new ShaderFilter(bloomlol)]);
+					camGame.filters = [new ShaderFilter(bloomlol)];
 				}
 			}
 		}
@@ -2770,7 +2734,7 @@ class PlayState extends MusicBeatState
 					case 'crucify (yuri mix)':
 						preintrocutscene();
 
-					case 'hot air balloon' | 'shrinking violet' | 'joyride' | 'our harmony' | 'you and me' | 'love n funkin' | 'constricted' | 'wilted' | 'takeover medley' | 'libitina' | 'drinks on me' | 'stagnant' | 'markov' | 'home':
+					case 'hot air balloon' | 'shrinking violet' | 'shrinking violet-alt' | 'joyride' | 'our harmony' | 'you and me' | 'love n funkin' | 'love n funkin-alt' | 'constricted' | 'wilted' | 'takeover medley' | 'libitina' | 'drinks on me' | 'stagnant' | 'markov' | 'home':
 						customstart();
 				}
 			}
@@ -2778,7 +2742,7 @@ class PlayState extends MusicBeatState
 			{
 				switch (curSong.toLowerCase())
 				{
-					case 'dual demise' | 'your demise' | 'epiphany' | 'wilted' | 'you and me' | 'libitina' | 'takeover medley' | 'drinks on me' | 'our harmony' | 'love n funkin' | 'constricted' | 'stagnant' | 'markov' | 'home':
+					case 'dual demise' | 'your demise' | 'epiphany' | 'wilted' | 'you and me' | 'libitina' | 'takeover medley' | 'drinks on me' | 'our harmony' | 'love n funkin' | 'love n funkin-alt' | 'constricted' | 'stagnant' | 'markov' | 'home':
 						customstart();
 					default:
 						startCountdown();
@@ -2790,7 +2754,7 @@ class PlayState extends MusicBeatState
 			switch (curSong.toLowerCase())
 			{
 				case 'dual demise' | 'your demise' | 'epiphany' | 'wilted' | 'you and me' | 'libitina' | 'takeover medley' | 'drinks on me' | 'our harmony' |
-					'love n funkin' | 'constricted' | 'stagnant' | 'markov' | 'home':
+					'love n funkin' | 'love n funkin-alt' | 'constricted' | 'stagnant' | 'markov' | 'home':
 					customstart();
 				default:
 					startCountdown();
@@ -2859,7 +2823,8 @@ class PlayState extends MusicBeatState
 
 		switch (curSong.toLowerCase())
 		{
-			case 'hot air balloon' | 'shrinking violet' | 'joyride':
+			case 'hot air balloon' | 'shrinking violet' | 'shrinking violet-alt' | 'joyride':
+				whiteflash.makeGraphic(FlxG.width * 3, FlxG.height * 3, 0xFFFDC1FF);
 				if (isStoryMode && showCutscene)
 				{
 					dad.alpha = 0.001;
@@ -2886,7 +2851,7 @@ class PlayState extends MusicBeatState
 				}
 				else
 					startCountdown();
-			case 'love n funkin':
+			case 'love n funkin' | 'love n funkin-alt':
 				boyfriend.x += 230;
 				gf.x += 85;
 				gf.y += 320;
@@ -2934,15 +2899,15 @@ class PlayState extends MusicBeatState
 				scorePop = false;
 				if (isStoryMode && showCutscene)
 				{
-					#if (FEATURE_MP4 || FEATURE_VIDEO)
-					var video:NetStreamHandler = new NetStreamHandler();
+					#if FEATURE_MP4
+					var video:VideoHandler = new VideoHandler();
 					video.canSkip = SaveData.beatLibitina;
 					video.skipKeys = [FlxKey.ESCAPE, FlxKey.ENTER];
-					video.playVideo(Paths.video('metaintro'), false, true);
-					video.finishCallback = function()
+					video.play(Paths.video('metaintro'));
+					video.onEndReached.add(function()
 					{
 						startCountdown();
-					}
+					});
 					#else
 					startCountdown();
 					#end
@@ -3161,7 +3126,8 @@ class PlayState extends MusicBeatState
 						});
 					}
 				});
-			case 'baka':
+
+			case 'baka' | 'baka-alt':
 				add(blackScreen);
 				blackScreen.cameras = [camOverlay];
 				blackScreen.alpha = 0.1;
@@ -3271,15 +3237,15 @@ class PlayState extends MusicBeatState
 						add(blackScreentwo);
 					});
 
-					#if (FEATURE_MP4 || FEATURE_VIDEO)
-					var video:NetStreamHandler = new NetStreamHandler();
+					#if FEATURE_MP4
+					var video:VideoHandler = new VideoHandler();
 					video.canSkip = SaveData.beatPrologue;
 					video.skipKeys = [FlxKey.ESCAPE, FlxKey.ENTER];
-					video.playVideo(Paths.video('monika'), false, true);
-					video.finishCallback = function()
+					video.play(Paths.video('monika'));
+					video.onEndReached.add(function()
 					{
 						endSong();
-					}
+					});
 					#else
 					endSong();
 					#end
@@ -3300,7 +3266,7 @@ class PlayState extends MusicBeatState
 
 				new FlxTimer().start(2.2, function(swagTimer:FlxTimer)
 				{
-					FlxG.sound.play(Paths.sound('dah'));
+					FlxG.sound.play(Paths.sound('gameover/dah'));
 				});
 			}
 			case 'dokiexit':
@@ -3322,26 +3288,23 @@ class PlayState extends MusicBeatState
 			}
 			case 'monikatransform':
 			{
-				#if (FEATURE_MP4 || FEATURE_VIDEO)
-				var video:NetStreamHandler = new NetStreamHandler();
-				video.canSkip = false;
-				video.playVideo(Paths.video('monikacodin'));
+				#if FEATURE_MP4
+				var video:VideoHandler = new VideoHandler();
+				video.play(Paths.video('monikacodin'));
 				#end
 			}
 			case 'senpaitransform':
 			{
-				#if (FEATURE_MP4 || FEATURE_VIDEO)
-				var video:NetStreamHandler = new NetStreamHandler();
-				video.canSkip = false;
-				video.playVideo(Paths.video('senpaicodin'));
+				#if FEATURE_MP4
+				var video:VideoHandler = new VideoHandler();
+				video.play(Paths.video('senpaicodin'));
 				#end
 			}
 			case 'youregoingtophilly':
 			{
-				#if (FEATURE_MP4 || FEATURE_VIDEO)
-				var video:NetStreamHandler = new NetStreamHandler();
-				video.canSkip = false;
-				video.playVideo(Paths.video('youregoingtophilly'));
+				#if FEATURE_MP4
+				var video:VideoHandler = new VideoHandler();
+				video.play(Paths.video('youregoingtophilly'));
 				#end
 			}
 			case 'wiltedbgin':
@@ -3617,7 +3580,7 @@ class PlayState extends MusicBeatState
 
 		switch (curSong.toLowerCase())
 		{
-			case 'hot air balloon' | 'shrinking violet' | 'joyride':
+			case 'hot air balloon' | 'shrinking violet' | 'shrinking violet-alt' | 'joyride':
 				dad.alpha = 1;
 			case 'catfight':
 				var who:String;
@@ -3630,7 +3593,7 @@ class PlayState extends MusicBeatState
 				add(catpopup);
 			case 'wilted':
 				wiltswap(0, true);
-			case 'love n funkin' | 'constricted':
+			case 'love n funkin' | 'love n funkin-alt' | 'constricted':
 				if (blackScreen != null)
 					FlxTween.tween(blackScreen, {alpha: 0.001}, CoolUtil.calcSectionLength(0.25), {ease: FlxEase.sineOut});
 		}
@@ -4738,7 +4701,7 @@ class PlayState extends MusicBeatState
 
 				if (dad.animation.curAnim.name.startsWith('lastNOTE'))
 					dad.animation.curAnim.frameRate = 24 * timescale;
-			case 'love n funkin':
+			case 'love n funkin' | 'love n funkin-alt':
 				poemVideo.anim.framerate = 24 * timescale;
 		}
 
@@ -5407,33 +5370,24 @@ class PlayState extends MusicBeatState
 						goodNoteHit(daNote);
 				}
 
+				var center:Float = strumY + Note.swagWidth / 2;
+
+				// https://github.com/ShadowMario/FNF-PsychEngine/pull/12168
 				if (strumGroup.members[daNote.noteData].sustainReduce
 					&& daNote.isSustainNote
 					&& (daNote.mustPress || !daNote.ignoreNote)
 					&& (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
 				{
-					var center:Float = strumY + Note.swagWidth / 2;
-					var scaleY:Float = daNote.scale.y * Conductor.playbackSpeed;
-					var swagRect:FlxRect = new FlxRect();
+					var swagRect:FlxRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
+					var result:Int = 0;
 
 					if (strumScroll)
-					{
-						if (daNote.y - daNote.offset.y * scaleY + daNote.height >= center)
-						{
-							swagRect = new FlxRect(0, 0, daNote.frameWidth, daNote.frameHeight);
-							swagRect.height = (center - daNote.y) / daNote.scale.y;
-							swagRect.y = daNote.frameHeight - swagRect.height;
-						}
-					}
+						result = Std.int((daNote.y + daNote.height) - center);
 					else
-					{
-						if (daNote.y + daNote.offset.y * scaleY <= center)
-						{
-							swagRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
-							swagRect.y = (center - daNote.y) / daNote.scale.y;
-							swagRect.height -= swagRect.y;
-						}
-					}
+						result = Std.int(center - daNote.y);
+
+					if (result > 0)
+						swagRect.y = result / daNote.scale.y;
 
 					daNote.clipRect = swagRect;
 				}
@@ -5509,8 +5463,10 @@ class PlayState extends MusicBeatState
 							endSong();
 
 					case 'obsession':
+						if (staticshock != null)
+							staticshock.visible = false;
+
 						remove(whiteflash);
-						staticshock.visible = false;
 						obsessionending();
 						endcutscene();
 
@@ -6281,7 +6237,7 @@ class PlayState extends MusicBeatState
 			else
 				char = dad;
 
-			if (curSong.toLowerCase() == 'love n funkin' && iconP2.char != char.healthIcon)
+			if (curSong.toLowerCase().startsWith('love n funkin') && iconP2.char != char.healthIcon)
 				changeOpponentIcon(char);
 		}
 		else if (daNote != null && daNote.noteType == 6)
@@ -6385,7 +6341,7 @@ class PlayState extends MusicBeatState
 			else
 				char = dad;
 
-			if (curSong.toLowerCase() == 'love n funkin' && iconP2.char != char.healthIcon)
+			if (curSong.toLowerCase().startsWith('love n funkin') && iconP2.char != char.healthIcon)
 				changeOpponentIcon(char);
 		}
 		else if (note != null && note.noteType == 6)
@@ -6506,7 +6462,7 @@ class PlayState extends MusicBeatState
 				else
 					char = dad;
 
-				if (curSong.toLowerCase() == 'love n funkin' && iconP2.char != char.healthIcon)
+				if (curSong.toLowerCase().startsWith('love n funkin') && iconP2.char != char.healthIcon)
 					changeOpponentIcon(char);
 
 				switch (note.noteType)
@@ -6609,7 +6565,6 @@ class PlayState extends MusicBeatState
 		if (boyfriend.curCharacter == 'monika' && SaveData.monikacostume == 'casuallong' && !isStoryMode && !mirrormode)
 				boyfriend.x -= 120;
 
-		mirrormode = false;
 		if (boyfriend.gameoverchara == 'gameover-generic' && !mirrormode)
 			openSubState(new GameOverSubstate(gaCharacter.getScreenPosition().x, gaCharacter.getScreenPosition().y - gaCharacter.positionArray[1] - 20, forceType));
 		else
@@ -6908,6 +6863,40 @@ class PlayState extends MusicBeatState
 								FlxTween.tween(sparkleFG, {alpha: 0}, CoolUtil.calcSectionLength(), {ease: FlxEase.sineOut});
 								FlxTween.tween(pinkOverlay, {alpha: 0}, CoolUtil.calcSectionLength(), {ease: FlxEase.sineOut});
 							}
+					}
+				case 'shrinking violet-alt': //Violet specific events
+					switch (curStep)
+					{
+						case 272:
+							defaultCamZoom = 1.2;
+						case 528:
+							defaultCamZoom = 1;
+						case 784:
+							if (!SaveData.lowEnd)
+							{
+								sparkleBG.visible = true;
+								add(sparkleFG);
+								add(pinkOverlay);
+							}
+						case 1024:
+							defaultCamZoom = 1.2;
+							camFocus = false;
+							moveCamera('centered');
+						case 1040:
+							whiteflash.alpha = 1;
+							FlxTween.tween(whiteflash, {alpha: 0.001}, CoolUtil.calcSectionLength(0.3), {ease: FlxEase.sineOut});
+							defaultCamZoom = 1;
+							if (!SaveData.lowEnd)
+							{
+								encoreTime = 2;
+								FlxTween.tween(sparkleBG, {alpha: 0}, CoolUtil.calcSectionLength(), {ease: FlxEase.sineOut});
+								FlxTween.tween(sparkleFG, {alpha: 0}, CoolUtil.calcSectionLength(), {ease: FlxEase.sineOut});
+								FlxTween.tween(pinkOverlay, {alpha: 0}, CoolUtil.calcSectionLength(), {ease: FlxEase.sineOut});
+							}
+						case 1296:
+							camFocus = true;
+							defaultCamZoom = 1.2;
+							encoreTime = 0;
 					}
 				case 'titular (mc mix)':
 					switch (curStep)
@@ -7498,7 +7487,7 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(camFollow, {y: -3404, x: 589}, 5, {ease: FlxEase.linear});
 							FlxTween.tween(camHUD, {alpha: 0}, 2, {ease: FlxEase.sineOut});
 					}
-				case 'love n funkin':
+				case 'love n funkin' | 'love n funkin-alt':
 					// Jorge please don't kill me ~M&M
 					switch (curStep)
 					{
@@ -7523,6 +7512,7 @@ class PlayState extends MusicBeatState
 							extrachar2.dance();
 
 							camZooming = false;
+							defaultCamZoom = 1;
 							camGame2.fade(FlxColor.WHITE, 0.5, true);
 							poemVideo.anim.play('hando', true);
 							poemVideo.alpha = 1;
@@ -7573,6 +7563,20 @@ class PlayState extends MusicBeatState
 							camGame2.fade(FlxColor.WHITE, 0.5, true);
 							poemVideo.alpha = 0.001;
 							sideWindow.alpha = 0.001;
+					}
+					if (curSong.toLowerCase() == 'love n funkin-alt')
+					{
+						switch (curStep)
+						{
+							case 240:
+								defaultCamZoom = 1.3;
+							case 256:
+								defaultCamZoom = 1;
+							case 960:
+								defaultCamZoom = 1.1;
+							case 1024:
+								defaultCamZoom = 1;
+						}
 					}
 				case 'libitina':
 					switch (curStep)
@@ -7720,7 +7724,7 @@ class PlayState extends MusicBeatState
 							if (SaveData.shaders && !SaveData.lowEnd)
 							{
 								fishy.preset = 0;
-								camGame.setFilters([new ShaderFilter(warpy), new ShaderFilter(fishy)]);
+								camGame.filters = [new ShaderFilter(warpy), new ShaderFilter(fishy)];
 							}
 
 							addcharacter('ghost', 0);
@@ -7742,7 +7746,7 @@ class PlayState extends MusicBeatState
 							add(staticshock);
 						case 1728:
 							if (SaveData.shaders && !SaveData.lowEnd)
-								camGame.setFilters([new ShaderFilter(fishy)]);
+								camGame.filters = [new ShaderFilter(fishy)];
 
 							eyeBG.alpha = 1;
 							insert(members.indexOf(boyfriend) + 1, eyeShadow);
@@ -8012,13 +8016,13 @@ class PlayState extends MusicBeatState
 
 			if (show)
 			{
-				camGame.setFilters([new ShaderFilter(fishy), new ShaderFilter(shader)]);
-				camGame2.setFilters([new ShaderFilter(shader2)]);
+				camGame.filters = [new ShaderFilter(fishy), new ShaderFilter(shader)];
+				camGame2.filters = [new ShaderFilter(shader2)];
 			}
 			else
 			{
-				camGame.setFilters([new ShaderFilter(fishy)]);
-				camGame2.setFilters(null);
+				camGame.filters = [new ShaderFilter(fishy)];
+				camGame2.filters = [];
 			}
 		}
 		#end
@@ -8209,7 +8213,7 @@ class PlayState extends MusicBeatState
 				}
 			}
 
-			if (curSong.toLowerCase() == 'baka' && !sectionStart)
+			if (curSong.toLowerCase().startsWith('baka') && !sectionStart)
 			{
 				switch (curBeat)
 				{
@@ -8220,9 +8224,16 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(bakaOverlay, {alpha: 1}, CoolUtil.calcSectionLength(2), {ease: FlxEase.sineIn});
 						}
 					case 32:
-						if (bakaOverlay != null) bakaOverlay.animation.play('party rock is', true);
+						if (bakaOverlay != null) 
+							bakaOverlay.animation.play((curSong.toLowerCase().endsWith('-alt') ? 'FUCK' : 'party rock is'), true);
 						defaultCamZoom = 1.2;
-						camGame.shake(0.002, CoolUtil.calcSectionLength(2));
+						if (!curSong.toLowerCase().endsWith('-alt')) 
+							camGame.shake(0.002, CoolUtil.calcSectionLength(2));
+						else
+						{
+							whiteflash.alpha = 1;
+							FlxTween.tween(whiteflash, {alpha: 0.001}, CoolUtil.calcSectionLength(0.2), {ease: FlxEase.sineOut});
+						}
 					case 40:
 						camFocus = false;
 						camFollow.setPosition(boyfriend.getMidpoint().x - 100, boyfriend.getMidpoint().y - 100);
@@ -8244,7 +8255,14 @@ class PlayState extends MusicBeatState
 							FlxTween.tween(bakaOverlay, {alpha: 1}, CoolUtil.calcSectionLength(2), {ease: FlxEase.sineIn});
 						}
 					case 176:
-						if (bakaOverlay != null) bakaOverlay.animation.play('party rock is', true);
+						if (bakaOverlay != null)
+							bakaOverlay.animation.play((curSong.toLowerCase().endsWith('-alt') ? 'FUCK' : 'party rock is'), true);
+
+						if (curSong.toLowerCase().endsWith('-alt'))
+						{
+							whiteflash.alpha = 1;
+							FlxTween.tween(whiteflash, {alpha: 0.001}, CoolUtil.calcSectionLength(0.2), {ease: FlxEase.sineOut});
+						}
 				}
 			}
 
@@ -8474,6 +8492,10 @@ class PlayState extends MusicBeatState
 								camFollow.x += 10;
 						}
 				}
+
+				camFollow.x += dad.cameraPosition[0];
+				camFollow.y += dad.cameraPosition[1];
+
 				switch (curStage)
 				{
 					case 'clubroomevil' | 'libitina':
@@ -8562,6 +8584,10 @@ class PlayState extends MusicBeatState
 								camFollow.y = 360;
 						}
 				}
+
+				camFollow.x += boyfriend.cameraPosition[0];
+				camFollow.y += boyfriend.cameraPosition[1];
+
 				switch (curStage)
 				{
 					case 'wilted':
@@ -8949,10 +8975,10 @@ class PlayState extends MusicBeatState
 	{
 		if (SaveData.shaders && !SaveData.lowEnd && !forcenonShader)
 		{
-			camGame2.setFilters([new ShaderFilter(staticlol)]);
+			camGame2.filters = [new ShaderFilter(staticlol)];
 			new FlxTimer().start(0.2, function(tmr:FlxTimer)
 			{
-				camGame2.setFilters([]);
+				camGame2.filters = [];
 			});
 		}
 		else
@@ -8976,7 +9002,7 @@ class PlayState extends MusicBeatState
 		if (skipFlash == false)
 		{
 			whiteflash.alpha = 1;
-			FlxTween.tween(whiteflash, {alpha: 0.001}, CoolUtil.calcSectionLength(0.1), {ease: FlxEase.sineOut});
+			FlxTween.tween(whiteflash, {alpha: 0.001}, CoolUtil.calcSectionLength(0.2), {ease: FlxEase.sineOut});
 		}
 
 		var regStyle:String = mirrormode ? 'pixel' : SONG.noteStyle;

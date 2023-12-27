@@ -3,11 +3,13 @@
 	[
 		{
 			"name": "hxcpp",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "4.3.2"
 		},
 		{
-			"name": "hxcpp-debug-server",
-			"type": "haxelib"
+			"name": "lime",
+			"type": "haxelib",
+			"version": "8.1.1"
 		},
 		{
 			"name": "lime",
@@ -17,17 +19,17 @@
 		{
 			"name": "openfl",
 			"type": "haxelib",
-			"version": "9.2.1"
+			"version": "9.3.2"
 		},
 		{
 			"name": "flixel",
 			"type": "haxelib",
-			"version": "5.3.0"
+			"version": "5.5.0"
 		},
 		{
 			"name": "flixel-addons",
 			"type": "haxelib",
-			"version": "3.0.2"
+			"version": "3.2.1"
 		},
 		{
 			"name": "flixel-ui",
@@ -41,11 +43,18 @@
 		},
 		{
 			"name": "firetongue",
-			"type": "haxelib"
+			"type": "haxelib",
+			"version": "2.1.0"
 		},
 		{
-			"name": "flxanimate",
-			"type": "haxelib"
+			"name": "hxcpp-debug-server",
+			"type": "haxelib",
+			"version": "1.2.4"
+		},
+		{
+			"name": "hscript",
+			"type": "haxelib",
+			"version": "2.5.0"
 		},
 		{
 			"name": "hscript",
@@ -62,6 +71,12 @@
 			"type": "git",
 			"ref": "master",
 			"url": "https://github.com/Aidan63/linc_discord-rpc.git"
+		},
+		{
+			"name": "flxanimate",
+			"type": "git",
+			"ref": "master",
+			"url": "https://github.com/Dot-Stuff/flxanimate"
 		}
 	]
 }

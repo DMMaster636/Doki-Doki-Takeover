@@ -42,12 +42,15 @@ class DokiFreeplayState extends MusicBeatState
 	static var pageFlipped:Bool = false;
 
 	var curDifficulty:Int = 1;
-	var goku:Bool = false;
+	var diffType:Int = 0;
 	var diffselect:Bool = false;
+	var diff:FlxSprite;
+	var diffsuffix:String = '';
+
 	var scoreText:FlxText;
 	var lerpScore:Float = 0;
 	var intendedScore:Float = 0;
-	var diff:FlxSprite;
+
 	var bg:FlxSprite;
 
 	var songPlayback:FlxSprite;
@@ -70,7 +73,10 @@ class DokiFreeplayState extends MusicBeatState
 	];
 
 	public static var multiDiff:Array<String> = [
-		'epiphany'
+		'epiphany',
+		'baka',
+		'shrinking violet',
+		'love n funkin'
 	];
 
 	public static function loadDiff(diff:Int, name:String, array:Array<SwagSong>)
@@ -140,7 +146,7 @@ class DokiFreeplayState extends MusicBeatState
 
 		for (i in 0...songs.length)
 		{
-			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter);
+			var icon:HealthIcon = new HealthIcon(songs[i].songCharacter, false, false);
 			iconArray.push(icon);
 			icon.x = 1060;
 			icon.y = 550;
@@ -183,7 +189,7 @@ class DokiFreeplayState extends MusicBeatState
 
 		menu_character = new FlxSprite(40, 490);
 		if (curPage != 3)
-		{			
+		{
 			menu_character.frames = Paths.getSparrowAtlas('freeplay/chibidorks');
 			menu_character.animation.addByPrefix('idle', 'FreeplayChibiIdle', 24, false);
 			menu_character.animation.addByPrefix('pop_off', 'FreeplayChibiCheer', 24, false);
@@ -206,15 +212,9 @@ class DokiFreeplayState extends MusicBeatState
 		diff = new FlxSprite(453, 580);
 		diff.frames = Paths.getSparrowAtlas('dokistory/difficulties', 'preload', true);
 		diff.antialiasing = SaveData.globalAntialiasing;
-		diff.animation.addByPrefix('regular', 'Regular', 24);
-		diff.animation.addByPrefix('lyrics', 'Lyrics', 24);
-		switch (curPage)
-		{
-			default:
-				diff.animation.play('regular');
-			case 3:
-				diff.animation.play('lyrics');
-		}
+		diff.animation.addByPrefix('regular', 'diff_reg', 24);
+		diff.animation.addByPrefix('lyrics', 'diff_lyrics', 24);
+		diff.animation.addByPrefix('alt', 'diff_alt', 24);
 		diff.updateHitbox();
 		diff.visible = false;
 		add(diff);
@@ -402,6 +402,7 @@ class DokiFreeplayState extends MusicBeatState
 					case true:
 						diff.visible = false;
 						diffselect = false;
+						diffsuffix = '';
 					case false:
 						selectedSomethin = true;
 						pageFlipped = false;
@@ -435,30 +436,7 @@ class DokiFreeplayState extends MusicBeatState
 
 			if (controls.ACCEPT && songs.length >= 1)
 			{
-				if (multiDiff.contains(songs[curSelected].songName.toLowerCase()) && SaveData.beatEpiphany)
-				{
-					switch (diffselect)
-					{
-						case false:
-							{
-								FlxG.sound.play(Paths.sound('confirmMenu'));
-								diff.visible = true;
-								diffselect = true;
-							}
-						case true:
-							{
-								startsong();
-							}
-					}
-				}
-				else
-				{
-					curDifficulty = 1;
-					if (songs[curSelected].songName.toLowerCase() == 'catfight')
-						openSubState(new CatfightPopup('freeplay'));
-					else
-						startsong();
-				}
+				selectSong();
 			}
 		}
 
@@ -466,6 +444,45 @@ class DokiFreeplayState extends MusicBeatState
 			Conductor.songPosition = FlxG.sound.music.time;
 
 		super.update(elapsed);
+	}
+
+	function selectSong()
+	{
+		if (diffselect && multiDiff.contains(songs[curSelected].songName.toLowerCase()))
+		{
+			if (diffType == 1)
+				curDifficulty = 1;
+
+			startsong();
+			return;
+		}
+
+		if (multiDiff.contains(songs[curSelected].songName.toLowerCase()))
+		{
+			switch (songs[curSelected].songName.toLowerCase())
+			{
+				case 'epiphany':
+					FlxG.sound.play(Paths.sound('confirmMenu'));
+					diffType = 0;
+					diff.visible = true;
+					diffselect = true;
+				case 'baka' | 'shrinking violet' | 'love n funkin':
+					FlxG.sound.play(Paths.sound('confirmMenu'));
+					diffType = 1;
+					diff.visible = true;
+					diffselect = true;
+				default:
+					startsong();
+			}
+		}
+		else
+		{
+			curDifficulty = 1;
+			if (songs[curSelected].songName.toLowerCase() == 'catfight')
+				openSubState(new CatfightPopup('freeplay'));
+			else
+				startsong();
+		}
 	}
 
 	public function startsong()
@@ -509,19 +526,19 @@ class DokiFreeplayState extends MusicBeatState
 
 	function loadSong(isCharting:Bool = false)
 	{
-		var poop:String = Highscore.formatSong(songs[curSelected].songName, curDifficulty);
+		var poop:String = Highscore.formatSong(songs[curSelected].songName + diffsuffix, curDifficulty);
 
 		PlayState.isStoryMode = false;
 
 		try
 		{
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase() + diffsuffix);
 			PlayState.storyDifficulty = curDifficulty;
 		}
 		catch (e)
 		{
 			poop = Highscore.formatSong(songs[curSelected].songName, 1);
-			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
+			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase() + diffsuffix);
 			PlayState.storyDifficulty = 1;
 		}
 
@@ -545,34 +562,26 @@ class DokiFreeplayState extends MusicBeatState
 
 	function changeDiff(change:Int = 0):Void
 	{
+		diffsuffix = '';
 		curDifficulty += change;
 
-		if (curPage != 3)
-		{
-			if (curDifficulty < 0)
-				curDifficulty = 2;
-			if (curDifficulty > 2)
-				curDifficulty = 0;
-		}
-		else
-		{
-			if (curDifficulty <= 0)
-				curDifficulty = 2;
-			if (curDifficulty > 2)
-				curDifficulty = 1;
-		}
-
-		getSongData(songs[curSelected].songName, curDifficulty);
+		if (curDifficulty <= 0)
+			curDifficulty = 2;
+		if (curDifficulty > 2)
+			curDifficulty = 1;
 
 		switch (curDifficulty)
 		{
 			case 2:
 				trace('hard');
-				diff.animation.play('lyrics');
+				diff.animation.play((diffType == 0 ? 'lyrics' : 'alt'));
+				if (diffType == 1) diffsuffix = '-alt';
 			case 1:
 				trace('normal');
 				diff.animation.play('regular');
 		}
+
+		getSongData(songs[curSelected].songName + diffsuffix, curDifficulty);
 	}
 
 	function playSong()
@@ -601,13 +610,16 @@ class DokiFreeplayState extends MusicBeatState
 		if (curSelected < 0)
 			curSelected = songs.length - 1;
 
+		curDifficulty = 1;
+		changeDiff();
+
 		if ((curPage == 1 && !SaveData.beatEncore) || (curPage == 2 && !SaveData.beatPrologue))
 		{
 			trace('look at me I am not beaten');
 		}
 		else
 		{
-			getSongData(songs[curSelected].songName, curDifficulty);
+			getSongData(songs[curSelected].songName + diffsuffix, curDifficulty);
 
 			if (SaveData.cacheSong)
 			{
@@ -617,7 +629,7 @@ class DokiFreeplayState extends MusicBeatState
 					FlxG.sound.music.destroy();
 					FlxG.sound.music = null;
 				}
-	
+
 				playSong();
 			}
 		}
@@ -647,44 +659,16 @@ class DokiFreeplayState extends MusicBeatState
 
 	function onMouseDown(spr:FlxSprite):Void
 	{
-		if (!selectedSomethin && acceptInput)
+		if (!selectedSomethin && acceptInput && songs.length >= 1)
 		{
-			if (multiDiff.contains(songs[curSelected].songName.toLowerCase()))
-			{
-				if (SaveData.beatEpiphany)
-				{
-					switch (diffselect)
-					{
-						case false:
-							{
-								FlxG.sound.play(Paths.sound('confirmMenu'));
-								diff.visible = true;
-								diffselect = true;
-							}
-						case true:
-							{
-								startsong();
-							}
-					}
-				}
-				else
-					startsong();	
-			}
-			else
-			{
-				curDifficulty = 1;
-				if (songs[curSelected].songName.toLowerCase() == 'catfight')
-					openSubState(new CatfightPopup('freeplay'));
-				else
-					startsong();
-			}
+			selectSong();
 		}
 	}
 
 	//I don't know if you can just check in mousedown but just incase
 	function onMouseDownPlayback(spr:FlxSprite)
 	{
-		if (!selectedSomethin && acceptInput)
+		if (!selectedSomethin && acceptInput && !diffselect)
 		{
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 			playSong();
@@ -693,7 +677,7 @@ class DokiFreeplayState extends MusicBeatState
 
 	function onMouseDownModifier(spr:FlxSprite)
 	{
-		if (!selectedSomethin && acceptInput)
+		if (!selectedSomethin && acceptInput && !diffselect)
 		{
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 			openSubState(new DokiModifierSubState());
@@ -702,17 +686,17 @@ class DokiFreeplayState extends MusicBeatState
 
 	function onMouseDownCostume(spr:FlxSprite)
 	{
-		if (!selectedSomethin && acceptInput)
+		if (!selectedSomethin && acceptInput && !diffselect)
 		{
 			FlxG.sound.play(Paths.sound('confirmMenu'));
 			MusicBeatState.switchState(new CostumeSelectState());
 		}
-			
+
 	}
 
 	function onMouseOver(txt:FlxText):Void
 	{
-		if (!selectedSomethin && acceptInput)
+		if (!selectedSomethin && acceptInput && !diffselect)
 		{
 			if (curSelected != txt.ID)
 			{
@@ -725,10 +709,21 @@ class DokiFreeplayState extends MusicBeatState
 
 	function getSongData(songName:String, diff:Int)
 	{
+		var suffixChanged = false;
+
 		if (!multiDiff.contains(songName.toLowerCase()))
 			diff = 1;
 
-		intendedScore = Highscore.getScore(songName, diff);
+		if (songName.contains("-alt") && diffsuffix == "-alt")
+		{
+			diffsuffix = "";
+			suffixChanged = true;
+		}
+
+		intendedScore = Highscore.getScore(songName + diffsuffix, diff);
+
+		if (suffixChanged)
+			diffsuffix = "-alt";
 	}
 
 	function changePage(huh:Int = 0)
