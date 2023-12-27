@@ -106,49 +106,11 @@
 			"name": "Sayo Nara animated"
 		}
 	],
-	"costumes": "sayori",
-	"costumelist": [
-		{
-			"subfolder":true,
-			"internal_Name": "blueskies",
-			"charFile":"sayori-blueskies"
-		},
-		{
-			"subfolder":true,
-			"internal_Name": "casual",
-			"charFile":"sayori-casual"
-		},
-		{
-			"subfolder":true,
-			"internal_Name": "picnic",
-			"charFile":"sayori-picnic"
-		},
-		{
-			"subfolder":true,
-			"internal_Name": "grace",
-			"charFile":"sayori-grace"
-		},
-		{
-			"subfolder":true,
-			"internal_Name": "minus",
-			"charFile":"sayori-minus"
-		},
-		{
-			"subfolder":true,
-			"internal_Name": "sleepwear",
-			"charFile":"sayori-sleepwear"
-		},
-		{
-			"subfolder":true,
-			"internal_Name": "zipper",
-			"charFile":"sayori-zipper"
-		}
-	],
 	"no_antialiasing": false,
-	"image": "characters/badending/Silhouette_Sayo_Assets",
+	"image": "characters/badending/silhouette_sayo",
 	"position": [
 		0,
-		-280
+		80
 	],
 	"healthicon": "sayori",
 	"flip_x": false,

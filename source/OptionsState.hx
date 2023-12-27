@@ -187,7 +187,7 @@ class OptionsState extends MusicBeatState
 				if (!SaveData.badEndingSelected)
 					MusicBeatState.switchState(new MainMenuState());
 				else
-					MusicBeatState.switchState(new MainMenuStateBad());
+					MusicBeatState.switchState(new EvilMainMenuState());
 			}
 			else if (controls.BACK)
 			{

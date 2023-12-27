@@ -7,6 +7,17 @@
 		"player3": null,
 		"events": [
 			[
+				0,
+				[
+					[
+						"Change Combo UI",
+						"normalUI/",
+						"-normal",
+						""
+					]
+				]
+			],
+			[
 				2666.66666666667,
 				[
 					[
@@ -62,6 +73,17 @@
 					[
 						"Glitch increase",
 						"2",
+						""
+					]
+				]
+			],
+			[
+				23000,
+				[
+					[
+						"Stagnant Glitch",
+						"holycow",
+						"i like cheese",
 						""
 					]
 				]
@@ -133,6 +155,12 @@
 						"Add/Remove Vignette",
 						"0.2",
 						"0"
+					],
+					[
+						"Change Combo UI",
+						"",
+						"",
+						""
 					]
 				]
 			],
@@ -172,6 +200,17 @@
 					[
 						"Glitch increase",
 						"2",
+						""
+					]
+				]
+			],
+			[
+				44333.3333333333,
+				[
+					[
+						"Stagnant Glitch",
+						"holycow",
+						"i like cheese",
 						""
 					]
 				]
@@ -228,15 +267,16 @@
 						"Force Dance",
 						"gf",
 						""
-					]
-				]
-			],
-			[
-				45333.3333333333,
-				[
+					],
 					[
 						"Glitch increase",
 						"3",
+						""
+					],
+					[
+						"Change Combo UI",
+						"normalUI/",
+						"-normal",
 						""
 					]
 				]
@@ -297,6 +337,17 @@
 					[
 						"Glitch increase",
 						"4",
+						""
+					]
+				]
+			],
+			[
+				65666.6666666667,
+				[
+					[
+						"Stagnant Glitch",
+						"holycow",
+						"i like cheese",
 						""
 					]
 				]
@@ -363,6 +414,12 @@
 						"Add/Remove Vignette",
 						"0.3",
 						"0"
+					],
+					[
+						"Change Combo UI",
+						"",
+						"",
+						""
 					]
 				]
 			],
@@ -427,12 +484,17 @@
 					[
 						"Change Health Graphic",
 						"poemUI/,-poem",
-						"10,12.5"
+						"10,20"
 					],
 					[
 						"Change Time Graphic",
 						"poemUI/,-poem",
-						"10,12.5"
+						"10,15"
+					],
+					[
+						"Change HUD Font",
+						"poem",
+						""
 					],
 					[
 						"Change Stagnant Stage",
@@ -526,6 +588,11 @@
 					],
 					[
 						"Change Time Graphic",
+						"",
+						""
+					],
+					[
+						"Change HUD Font",
 						"",
 						""
 					],
@@ -817,12 +884,17 @@
 					[
 						"Change Health Graphic",
 						"poemUI/,-poem",
-						"10,12.5"
+						"10,20"
 					],
 					[
 						"Change Time Graphic",
 						"poemUI/,-poem",
-						"10,12.5"
+						"10,15"
+					],
+					[
+						"Change HUD Font",
+						"poem",
+						""
 					],
 					[
 						"Change Stagnant Stage",

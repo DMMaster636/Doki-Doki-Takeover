@@ -444,9 +444,9 @@ class PauseSubState extends MusicBeatSubstate
 							MusicBeatState.switchState(new DokiFreeplayState());
 					} else {
 						if (PlayState.isStoryMode)
-							MusicBeatState.switchState(new MainMenuStateBad());
+							MusicBeatState.switchState(new EvilMainMenuState());
 						else
-							MusicBeatState.switchState(new FreeplayState());
+							MusicBeatState.switchState(new EvilFreeplayState());
 					}
 				case "Easy" | "Normal" | "Hard":
 					try

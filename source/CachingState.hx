@@ -163,13 +163,13 @@ class CachingState extends MusicBeatState
 
 		loaded = true;
 
-		if (!TitleState.initialized || !TitleStateBad.initialized)
+		if (!TitleState.initialized || !EvilTitleState.initialized)
 		{
 			FlxTransitionableState.skipNextTransOut = true;
 			if (!SaveData.badEndingSelected)
 				MusicBeatState.switchState(new TitleState());
 			else
-				MusicBeatState.switchState(new TitleStateBad());
+				MusicBeatState.switchState(new EvilTitleState());
 		}
 		else
 		{

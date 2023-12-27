@@ -586,10 +586,13 @@ class PlayState extends MusicBeatState
 				if (DokiFreeplayState.singleDiff.contains(SONG.song.toLowerCase()))
 					storyDifficultyText = "";
 				else
-					storyDifficultyText = LangUtil.getString('cmnNormal'); 
+					storyDifficultyText = LangUtil.getString('cmnNormal');
 
 			case 2:
 				storyDifficultyText = LangUtil.getString('cmnHard');
+
+			case 3:
+				storyDifficultyText = LangUtil.getString('cmnUnfair');
 		}
 
 		#if FEATURE_DISCORD
@@ -3333,14 +3336,14 @@ class PlayState extends MusicBeatState
 			case 'beintro':
 			{
 				#if (FEATURE_MP4 || FEATURE_VIDEO)
-				var video:NetStreamHandler = new NetStreamHandler();
+				var video:VideoHandler = new VideoHandler();
 				video.canSkip = SaveData.beatBadEnding;
 				video.skipKeys = [FlxKey.ESCAPE, FlxKey.ENTER];
-				video.playVideo(Paths.video('be-intro'), false, true);
-				video.finishCallback = function()
+				video.play(Paths.video('be-intro'));
+				video.onEndReached.add(function()
 				{
 					startCountdown();
-				}
+				});
 				#else
 				startCountdown();
 				#end
@@ -3348,14 +3351,14 @@ class PlayState extends MusicBeatState
 			case 'beend':
 			{
 				#if (FEATURE_MP4 || FEATURE_VIDEO)
-				var video:NetStreamHandler = new NetStreamHandler();
+				var video:VideoHandler = new VideoHandler();
 				video.canSkip = SaveData.beatBadEnding;
 				video.skipKeys = [FlxKey.ESCAPE, FlxKey.ENTER];
-				video.playVideo(Paths.video('be-ending'), false, true);
-				video.finishCallback = function()
+				video.play(Paths.video('be-ending'));
+				video.onEndReached.add(function()
 				{
-					endSong();
-				}
+						endSong();
+					});
 				#else
 				endSong();
 				#end
@@ -5635,7 +5638,7 @@ class PlayState extends MusicBeatState
 				if (!SaveData.badEndingSelected)
 					MusicBeatState.switchState(new DokiFreeplayState());
 				else
-					MusicBeatState.switchState(new FreeplayState());
+					MusicBeatState.switchState(new EvilFreeplayState());
 			}
 		}
 	}

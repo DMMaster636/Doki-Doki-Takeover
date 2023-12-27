@@ -54,26 +54,13 @@
 			"anim": "singUP",
 			"indices": [],
 			"name": "Nat Sing Note Up"
-		},
-		{
-			"offsets": [
-				-12,
-				0
-			],
-			"loop": false,
-			"fps": 24,
-			"anim": "hmmph",
-			"indices": [],
-			"name": "Nat hmph"
 		}
 	],
-	"costumes": "natsuki",
-	"costumelist": [],
 	"no_antialiasing": false,
-	"image": "characters/badending/Silhouette_Nat_Assets",
+	"image": "characters/badending/silhouette_nat",
 	"position": [
 		0,
-		-175
+		175
 	],
 	"healthicon": "natsuki",
 	"flip_x": false,

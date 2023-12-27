@@ -312,7 +312,7 @@ class MainMenuState extends MusicBeatState
 				if (!SaveData.warningBadEnding)
 					MusicBeatState.switchState(new WarningState());
 				else
-					MusicBeatState.switchState(new TitleStateBad());
+					MusicBeatState.switchState(new EvilTitleState());
 			}
 
 			if (controls.UP_P)

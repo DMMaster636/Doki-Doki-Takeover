@@ -4,11 +4,10 @@
 			"loop": false,
 			"offsets": [
 				0,
-				0
+				-9
 			],
-			"anim": "danceLeft",
 			"fps": 24,
-			"name": "GF IDLE",
+			"anim": "danceLeft",
 			"indices": [
 				30,
 				0,
@@ -26,17 +25,17 @@
 				12,
 				13,
 				14
-			]
+			],
+			"name": "GF Dancing Beat"
 		},
 		{
 			"loop": false,
 			"offsets": [
 				0,
-				0
+				-9
 			],
-			"anim": "danceRight",
 			"fps": 24,
-			"name": "GF IDLE",
+			"anim": "danceRight",
 			"indices": [
 				15,
 				16,
@@ -53,24 +52,23 @@
 				27,
 				28,
 				29
-			]
+			],
+			"name": "GF Dancing Beat"
 		},
 		{
-			"loop": false,
+			"loop": true,
 			"offsets": [
-				0,
-				0
+				-2,
+				-62
 			],
-			"anim": "singUP",
 			"fps": 24,
-			"name": "GF IDLE",
-			"indices": []
+			"anim": "necksnap",
+			"indices": [],
+			"name": "GF NECKSNAP"
 		}
 	],
-	"costumes": "gf",
-	"costumelist": [],
-	"no_antialiasing": true,
-	"image": "characters/badending/Silhouette_gfdoki",
+	"no_antialiasing": false,
+	"image": "characters/badending/silhouette_gf",
 	"position": [
 		0,
 		0
@@ -83,9 +81,9 @@
 		77
 	],
 	"camera_position": [
-		-20,
-		80
+		0,
+		0
 	],
 	"sing_duration": 4,
-	"scale": 6
+	"scale": 1
 }

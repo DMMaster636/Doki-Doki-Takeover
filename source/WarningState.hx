@@ -83,7 +83,7 @@ class WarningState extends MusicBeatState
 
 			new FlxTimer().start(2, function(tmr:FlxTimer)
 			{
-				MusicBeatState.switchState(new TitleStateBad());
+				MusicBeatState.switchState(new EvilTitleState());
 			});
 		}
 

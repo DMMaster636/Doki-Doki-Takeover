@@ -13,28 +13,6 @@
 		},
 		{
 			"offsets": [
-				0,
-				0
-			],
-			"indices": [],
-			"fps": 24,
-			"anim": "idle-alt",
-			"loop": false,
-			"name": "Yuri Idle-alt"
-		},
-		{
-			"offsets": [
-				11,
-				25
-			],
-			"indices": [],
-			"fps": 24,
-			"anim": "breath",
-			"loop": false,
-			"name": "Yuri Breath"
-		},
-		{
-			"offsets": [
 				-4,
 				-22
 			],
@@ -78,13 +56,11 @@
 			"name": "Yuri Sing Note Down"
 		}
 	],
-	"costumes": "yuri",
-	"costumelist": [],
 	"no_antialiasing": false,
-	"image": "characters/badending/Silhouette_Yuri_Assets",
+	"image": "characters/badending/silhouette_yuri",
 	"position": [
-		0,
-		-350
+		10,
+		100
 	],
 	"healthicon": "yuri",
 	"flip_x": false,

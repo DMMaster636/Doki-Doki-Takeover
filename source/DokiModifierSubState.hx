@@ -44,7 +44,7 @@ class DokiModifierSubState extends MusicBeatSubstate
 		if (!SaveData.badEndingSelected)
 			DokiFreeplayState.instance.acceptInput = false;
 		else
-			FreeplayState.instance.acceptInput = false;
+			EvilFreeplayState.instance.acceptInput = false;
 
 		for (i in modifierData)
 		{
@@ -97,7 +97,7 @@ class DokiModifierSubState extends MusicBeatSubstate
 				if (!SaveData.badEndingSelected)
 					DokiFreeplayState.instance.acceptInput = true;
 				else
-					FreeplayState.instance.acceptInput = true;
+					EvilFreeplayState.instance.acceptInput = true;
 				SaveData.save();
 				close();
 			}

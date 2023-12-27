@@ -83,7 +83,7 @@ class Init extends MusicBeatState
 				if (!SaveData.badEndingSelected)
 					MusicBeatState.switchState(new TitleState());
 				else
-					MusicBeatState.switchState(new TitleStateBad());
+					MusicBeatState.switchState(new EvilTitleState());
 			}
 		}
 		#end
