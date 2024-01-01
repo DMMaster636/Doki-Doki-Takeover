@@ -26,6 +26,7 @@ class NoteSplash extends FlxSprite
 			case 'sketch':
 				frames = Paths.getSparrowAtlas('poemUI/noteSplashes');
 				allowRotation = true;
+				setPosition(x - 25, y - 25);
 			default:
 				frames = Paths.getSparrowAtlas('NOTE_splashes_doki');
 				allowRotation = true;

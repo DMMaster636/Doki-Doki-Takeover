@@ -41,7 +41,7 @@ class EvilTitleState extends MusicBeatState
 		if (!initialized && Argument.parse(Sys.args()))
 		{
 			initialized = true;
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+			FlxG.sound.playMusic(Paths.music('menuEvil'), 0);
 			Conductor.changeBPM(82.5);
 			return;
 		}
@@ -89,15 +89,16 @@ class EvilTitleState extends MusicBeatState
 		add(gradient);
 
 		logoBl = new FlxSprite(320, 0);
-		logoBl.frames = Paths.getSparrowAtlas('logoBumpin');
+		logoBl.frames = Paths.getSparrowAtlas('logoBadEnding');
 		logoBl.antialiasing = SaveData.globalAntialiasing;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, true);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
+		logoBl.screenCenter();
 		add(logoBl);
 
 		titleText = new FlxSprite(200, 576);
-		titleText.frames = Paths.getSparrowAtlas('titleEnter');
+		titleText.frames = Paths.getSparrowAtlas('titleEnterEvil');
 		titleText.animation.addByPrefix('idle', "Press Enter to Begin", 24);
 		titleText.animation.addByPrefix('press', "ENTER PRESSED", 24);
 		titleText.antialiasing = SaveData.globalAntialiasing;

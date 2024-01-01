@@ -1,10 +1,13 @@
 {
 	"song": {
 		"sectionLengths": [],
+		"numofchar": 4,
 		"player1": "bf-doki",
 		"events": [],
 		"gfVersion": "gf-realdoki",
 		"player2": "natsuki",
+		"player3": "sil_sayori",
+		"player4": "sil_yuri",
 		"notes": [
 			{
 				"sectionNotes": [],

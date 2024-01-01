@@ -346,9 +346,7 @@ class EvilFreeplayState extends MusicBeatState
 		if (curDifficulty >= difficulties.length)
 			curDifficulty = 0;
 
-		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
-		#end
 
 		PlayState.storyDifficulty = curDifficulty;
 		diffstuff.text = '< ' + difficulties[curDifficulty] + ' >';
@@ -391,9 +389,7 @@ class EvilFreeplayState extends MusicBeatState
 
 		// selector.y = (70 * curSelected) + 30;
 
-		#if !switch
 		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
-		#end
 
 		var bullShit:Int = 0;
 

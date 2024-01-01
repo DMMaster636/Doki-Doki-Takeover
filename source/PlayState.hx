@@ -183,7 +183,10 @@ class PlayState extends MusicBeatState
 
 	var grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 
+	public var bloodStrums:FlxTypedGroup<FlxSprite>;
+
 	public static var isPixelUI:Bool = false;
+	public static var isEvilUI:Bool = false;
 	public static var isPoemUI:Bool = false;
 
 	private var camZooming:Bool = false;
@@ -400,20 +403,26 @@ class PlayState extends MusicBeatState
 
 	// Bad Ending
 	var daStatic:BGSprite;
-	var inthenotepad:BGSprite; // dead meme, lol
-	var notepadoverlay:BGSprite;
-	var stageStatic:BGSprite;
-	private var staticAlpha:Float = 0;
+	var staticAlpha:Float = 0;
 
 	var swagShader:ColorSwap = new ColorSwap();
 
-	var bgScribbly:BGSprite;
+	var evilClubBG:BGSprite;
+	var evilClubBGScribbly:BGSprite;
+	var poemTransition:BGSprite;
+	var clubroomdark:BGSprite;
+	var bloodyBG:BGSprite;
+	var closetCloseUp:BGSprite;
+	var funnyEyes:BGSprite;
+	var stageStatic:BGSprite;
+	var bgwindo:FlxBackdrop;
+	var bgwindo2:FlxBackdrop;
+	var inthenotepad:BGSprite; // dead meme, lol
+	var notepadoverlay:BGSprite;
+	var glitchback:BGSprite;
 	var ruinedClubBG:BGSprite;
 	var glitchfront:BGSprite;
-	var glitchback:BGSprite;
 	var evilPoem:BGSprite;
-	var poemTransition:BGSprite;
-	var closetCloseUp:BGSprite;
 
 	var altAnim:String = "";
 	var fc:Bool = true;
@@ -519,12 +528,14 @@ class PlayState extends MusicBeatState
 
 		// set the pixel ui to false??  stuipd ???
 		isPixelUI = false;
+		isEvilUI = false;
 		isPoemUI = false;
 
 		if (SONG.noteStyle != null)
 		{
 			curStyle = SONG.noteStyle;
 			isPixelUI = SONG.noteStyle.startsWith('pixel');
+			isEvilUI = SONG.noteStyle.startsWith('evil');
 			isPoemUI = SONG.noteStyle.startsWith('sketch');
 		}
 		else
@@ -1161,27 +1172,6 @@ class PlayState extends MusicBeatState
 					{
 						switch (SONG.song.toLowerCase())
 						{
-							case 'stagnant':
-								{
-									space = new FlxBackdrop(Paths.image('bigmonika/SkyEvil', 'doki'));
-									space.scrollFactor.set(0.1, 0.1);
-									space.velocity.set(-7, 0);
-									space.antialiasing = SaveData.globalAntialiasing;
-									space.scale.set(0.7, 0.7);
-									add(space);
-								}
-							case 'home':
-								{
-									swagShader = new ColorSwap();
-									swagShader.saturation = -100;
-
-									space = new FlxBackdrop(Paths.image('bigmonika/SkyEvil', 'doki'));
-									space.scrollFactor.set(0.1, 0.1);
-									space.velocity.set(-7, 0);
-									space.antialiasing = SaveData.globalAntialiasing;
-									space.scale.set(0.7, 0.7);
-									add(space);
-								}
 							case 'my confession' | 'obsession':
 							{
 								vignette = new FlxSprite().loadGraphic(Paths.image('vignette', 'doki'));
@@ -1288,49 +1278,6 @@ class PlayState extends MusicBeatState
 						spotlight.blend = SCREEN;
 						spotlight.updateHitbox();
 						add(spotlight);
-					}
-
-					if (SONG.song.toLowerCase() == 'stagnant')
-					{
-						bg = new BGSprite('bigmonika/BG', 'doki', -220, -110, 1, 1);
-						bg.setGraphicSize(Std.int(bg.width * 1.3));
-						bg.visible = false;
-						add(bg);
-
-						bgScribbly = new BGSprite('bigmonika/BGsketch', 'doki', -220, -110, 1, 1, ['BGSketch'], true);
-						bgScribbly.setGraphicSize(Std.int(bgScribbly.width * 1.3));
-						bgScribbly.visible = false;
-						bgScribbly.alpha = 0.0001;
-						add(bgScribbly);
-
-						evilPoem = new BGSprite('badending/PaperBG', 'doki', -220, -110, 1, 1, ['PaperBG'], true);
-						evilPoem.setGraphicSize(Std.int(evilPoem.width * 1.3));
-						evilPoem.visible = false;
-						add(evilPoem);
-
-						poemTransition = new BGSprite('badending/PoemTransition', 'doki', 0, 0, 1, 1, ['poemtransition']);
-						poemTransition.cameras = [camHUD];
-						poemTransition.screenCenter();
-						poemTransition.visible = false;
-						add(poemTransition);
-
-						remove(bgDokis);
-					}
-
-					if (SONG.song.toLowerCase() == 'home')
-					{
-						stageStatic = new BGSprite('ruinedclub/HomeStatic', 'doki', 0, 0, 0, 0, ['HomeStatic'], true);
-						stageStatic.screenCenter();
-						stageStatic.y = -140;
-						stageStatic.visible = false;
-						add(stageStatic);
-
-						clubmainlight.shader = swagShader.shader;
-						closet.shader = swagShader.shader;
-						clubroom.shader = swagShader.shader;
-						deskfront.shader = swagShader.shader;
-
-						remove(bgDokis);
 					}
 
 					if (sparkleBG != null)
@@ -1928,52 +1875,257 @@ class PlayState extends MusicBeatState
 					}
 
 				}
-			case 'markov':
+			case 'stagnant': // hueh
 				{
+					closet = new BGSprite('clubroom/DDLCfarbg', 'doki', -700, -520, 0.9, 0.9);
+					closet.setGraphicSize(Std.int(closet.width * 1.6));
+					closet.updateHitbox();
+					add(closet);
+
+					clubroom = new BGSprite('clubroom/DDLCbg', 'doki', -700, -520, 1, 0.9);
+					clubroom.setGraphicSize(Std.int(clubroom.width * 1.6));
+					clubroom.updateHitbox();
+					add(clubroom);
+
 					if (!SaveData.lowEnd)
 					{
+						deskfront = new BGSprite('clubroom/DesksFront', 'doki', -700, -520, 1.3, 0.9);
+						deskfront.setGraphicSize(Std.int(deskfront.width * 1.6));
+						deskfront.updateHitbox();
+
 						space = new FlxBackdrop(Paths.image('bigmonika/SkyEvil', 'doki'));
 						space.scrollFactor.set(0.1, 0.1);
-						space.velocity.set(-7, 0);
+						space.velocity.set(-10, 0);
+						space.y -= 300;
 						space.antialiasing = SaveData.globalAntialiasing;
-						space.scale.set(0.7, 0.7);
+						space.visible = false;
 						add(space);
+
+						clouds = new FlxBackdrop(Paths.image('bigmonika/CloudsEvil', 'doki'));
+						clouds.scrollFactor.set(0.1, 0.1);
+						clouds.velocity.set(-13, 0);
+						clouds.y -= 300;
+						clouds.antialiasing = SaveData.globalAntialiasing;
+						clouds.scale.set(0.7, 0.7);
+						clouds.visible = false;
+						add(clouds);
+
+						fancyclouds = new FlxBackdrop(Paths.image('bigmonika/maskEvil', 'doki'));
+						fancyclouds.scrollFactor.set(0.1, 0.1);
+						fancyclouds.velocity.set(-13, 0);
+						fancyclouds.y -= 300;
+						fancyclouds.antialiasing = SaveData.globalAntialiasing;
+						fancyclouds.scale.set(0.7, 0.7);
+						fancyclouds.alpha = 1;
+						fancyclouds.visible = false;
+						add(fancyclouds);
 					}
 
-					bg = new BGSprite('bigmonika/BG', 'doki', -220, -110, 1, 1);
-					bg.setGraphicSize(Std.int(bg.width * 1.3));
-					add(bg);
+					evilClubBG = new BGSprite('bigmonika/BG', 'doki', -220, -110, 1, 1);
+					evilClubBG.setGraphicSize(Std.int(evilClubBG.width * 1.3));
+					evilClubBG.visible = false;
+					add(evilClubBG);
 
-					bgScribbly = new BGSprite('bigmonika/BGsketch', 'doki', -220, -110, 1, 1, ['BGSketch'], true);
-					bgScribbly.setGraphicSize(Std.int(bgScribbly.width * 1.3));
-					bgScribbly.visible = false;
-					bgScribbly.alpha = 0;
-					add(bgScribbly);
+					if (!SaveData.lowEnd)
+					{
+						clubroomdark = new BGSprite('bigmonika/shadow', 'doki', -220, -110, 1, 1);
+						clubroomdark.visible = false;
+						clubroomdark.setGraphicSize(Std.int(clubroomdark.width * 1.3));
+
+						windowlight = new BGSprite('bigmonika/WindowLightEvil', 'doki', -220, -110, 1, 1);
+						windowlight.visible = false;
+						windowlight.setGraphicSize(Std.int(windowlight.width * 1.3));
+						add(windowlight);
+					}
+
+					evilClubBGScribbly = new BGSprite('bigmonika/BGsketch', 'doki', -220, -110, 1, 1, ['BGSketch'], true);
+					evilClubBGScribbly.setGraphicSize(Std.int(evilClubBGScribbly.width * 1.3));
+					evilClubBGScribbly.visible = false;
+					evilClubBGScribbly.alpha = 0.0001;
+					add(evilClubBGScribbly);
 
 					evilPoem = new BGSprite('badending/PaperBG', 'doki', -220, -110, 1, 1, ['PaperBG'], true);
 					evilPoem.setGraphicSize(Std.int(evilPoem.width * 1.3));
 					evilPoem.visible = false;
 					add(evilPoem);
 
+					poemTransition = new BGSprite('badending/PoemTransition', 'doki', 0, 0, 1, 1, ['poemtransition']);
+					poemTransition.cameras = [camHUD];
+					poemTransition.screenCenter();
+					poemTransition.visible = false;
+					add(poemTransition);
+				}
+			case 'markov':
+				{
+					if (!SaveData.lowEnd)
+					{
+						space = new FlxBackdrop(Paths.image('bigmonika/SkyEvil', 'doki'));
+						space.scrollFactor.set(0.1, 0.1);
+						space.velocity.set(-10, 0);
+						space.y -= 300;
+						space.antialiasing = SaveData.globalAntialiasing;
+						add(space);
+
+						clouds = new FlxBackdrop(Paths.image('bigmonika/CloudsEvil', 'doki'));
+						clouds.scrollFactor.set(0.1, 0.1);
+						clouds.velocity.set(-13, 0);
+						clouds.y -= 300;
+						clouds.antialiasing = SaveData.globalAntialiasing;
+						clouds.scale.set(0.7, 0.7);
+						add(clouds);
+
+						fancyclouds = new FlxBackdrop(Paths.image('bigmonika/maskEvil', 'doki'));
+						fancyclouds.scrollFactor.set(0.1, 0.1);
+						fancyclouds.velocity.set(-13, 0);
+						fancyclouds.y -= 300;
+						fancyclouds.antialiasing = SaveData.globalAntialiasing;
+						fancyclouds.scale.set(0.7, 0.7);
+						fancyclouds.alpha = 1;
+						add(fancyclouds);
+					}
+
+					evilClubBG = new BGSprite('bigmonika/BG', 'doki', -220, -110, 1, 1);
+					evilClubBG.setGraphicSize(Std.int(evilClubBG.width * 1.3));
+					add(evilClubBG);
+
+					if (!SaveData.lowEnd)
+					{
+						clubroomdark = new BGSprite('bigmonika/shadow', 'doki', -220, -110, 1, 1);
+						clubroomdark.setGraphicSize(Std.int(clubroomdark.width * 1.3));
+
+						windowlight = new BGSprite('bigmonika/WindowLightEvil', 'doki', -220, -110, 1, 1);
+						windowlight.setGraphicSize(Std.int(windowlight.width * 1.3));
+						add(windowlight);
+					}
+
+					evilClubBGScribbly = new BGSprite('bigmonika/BGsketch', 'doki', -220, -110, 1, 1, ['BGSketch'], true);
+					evilClubBGScribbly.setGraphicSize(Std.int(evilClubBGScribbly.width * 1.3));
+					evilClubBGScribbly.visible = false;
+					evilClubBGScribbly.alpha = 0;
+					add(evilClubBGScribbly);
+
+					evilPoem = new BGSprite('badending/markovend', 'doki', -220, -110, 1, 1);
+					evilPoem.setGraphicSize(Std.int(evilPoem.width * 1.3));
+					evilPoem.visible = false;
+					add(evilPoem);
+
+					bloodyBG = new BGSprite('clubroom/bgBlood', 'doki', -220, 0, 1, 1, ['bgBlood'], false);
+					bloodyBG.animation.addByPrefix('bgBlood', 'bgBlood', 12, false);
+					bloodyBG.setGraphicSize(Std.int(bloodyBG.width * 1.3));
+					bloodyBG.alpha = 0.001;
+					add(bloodyBG);
+
 					closetCloseUp = new BGSprite('clubroom/ClosetBG', 'doki', -250, 0, 1, 1);
 					closetCloseUp.setGraphicSize(Std.int(closetCloseUp.width * 0.85));
 					closetCloseUp.updateHitbox();
 					closetCloseUp.visible = false;
 					add(closetCloseUp);
+
+					funnyEyes = new BGSprite('badending/EyeMidwayBG', 'doki', 0, 0, 1, 1, ['Midway'], true);
+					funnyEyes.antialiasing = SaveData.globalAntialiasing;
+					funnyEyes.alpha = 0.0001;
+					funnyEyes.cameras = [camHUD];
+					funnyEyes.setGraphicSize(Std.int(FlxG.width));
+					funnyEyes.updateHitbox();
+					funnyEyes.screenCenter();
+					add(funnyEyes);
 				}
 			case 'home':
 				{
-					inthenotepad = new BGSprite('badending/notepad', 'doki', 0, 0, 1, 1);
+					swagShader = new ColorSwap();
+					swagShader.saturation = -100;
+
+					stageStatic = new BGSprite('ruinedclub/HomeStatic', 'doki', 0, 0, 0, 0, ['HomeStatic'], true);
+					stageStatic.screenCenter();
+					stageStatic.y = -140;
+					stageStatic.visible = false;
+					add(stageStatic);
+
+					if (!SaveData.lowEnd)
+					{
+						bgwindo = new FlxBackdrop(Paths.image('ruinedclub/bgwindows2', 'doki'));
+						bgwindo.velocity.set(-40, 0);
+						bgwindo.scrollFactor.set(0.5, 0.5);
+						bgwindo.antialiasing = SaveData.globalAntialiasing;
+						add(bgwindo);
+
+						bgwindo2 = new FlxBackdrop(Paths.image('ruinedclub/bgwindows', 'doki'));
+						bgwindo2.velocity.set(-60, 0);
+						bgwindo2.scrollFactor.set(0.8, 0.8);
+						bgwindo2.antialiasing = SaveData.globalAntialiasing;
+						add(bgwindo2);
+
+						space = new FlxBackdrop(Paths.image('bigmonika/SkyEvil', 'doki'));
+						space.scrollFactor.set(0.1, 0.1);
+						space.velocity.set(-10, 0);
+						space.y -= 300;
+						space.antialiasing = SaveData.globalAntialiasing;
+						add(space);
+
+						clouds = new FlxBackdrop(Paths.image('bigmonika/CloudsEvil', 'doki'));
+						clouds.scrollFactor.set(0.1, 0.1);
+						clouds.velocity.set(-13, 0);
+						clouds.y -= 300;
+						clouds.antialiasing = SaveData.globalAntialiasing;
+						clouds.scale.set(0.7, 0.7);
+						add(clouds);
+
+						fancyclouds = new FlxBackdrop(Paths.image('bigmonika/maskEvil', 'doki'));
+						fancyclouds.scrollFactor.set(0.1, 0.1);
+						fancyclouds.velocity.set(-13, 0);
+						fancyclouds.y -= 300;
+						fancyclouds.antialiasing = SaveData.globalAntialiasing;
+						fancyclouds.scale.set(0.7, 0.7);
+						fancyclouds.alpha = 1;
+						add(fancyclouds);
+					}
+
+					bakaOverlay = new BGSprite('clubroom/BakaBGDoodlesEvil', 'doki', 0, 0, 1, 1, ['Normal Overlay'], true);
+					bakaOverlay.animation.addByPrefix('hueh', 'HOME Overlay', 24, false);
+					bakaOverlay.antialiasing = SaveData.globalAntialiasing;
+					bakaOverlay.visible = true;
+					bakaOverlay.alpha = 0.0001;
+					bakaOverlay.cameras = [camHUD];
+					bakaOverlay.setGraphicSize(Std.int(FlxG.width));
+					bakaOverlay.updateHitbox();
+					bakaOverlay.screenCenter();
+					add(bakaOverlay);
+
+					inthenotepad = new BGSprite('ruinedclub/notepad', 'doki', 0, 0, 1, 1);
 					inthenotepad.visible = false;
 					add(inthenotepad);
 
-					notepadoverlay = new BGSprite('badending/notepad_overlay', 'doki', 0, 0, 1, 1);
+					notepadoverlay = new BGSprite('ruinedclub/notepad_overlay', 'doki', 0, 0, 1, 1);
 					notepadoverlay.visible = false;
 
-					bg = new BGSprite('bigmonika/BG', 'doki', -220, -110, 1, 1);
-					bg.setGraphicSize(Std.int(bg.width * 1.3));
-					bg.visible = false;
-					add(bg);
+					closet = new BGSprite('clubroom/DDLCfarbg', 'doki', -700, -520, 0.9, 0.9);
+					closet.setGraphicSize(Std.int(closet.width * 1.6));
+					closet.updateHitbox();
+					closet.shader = swagShader.shader;
+					add(closet);
+
+					clubroom = new BGSprite('clubroom/DDLCbg', 'doki', -700, -520, 1, 0.9);
+					clubroom.setGraphicSize(Std.int(clubroom.width * 1.6));
+					clubroom.updateHitbox();
+					clubroom.shader = swagShader.shader;
+					add(clubroom);
+
+					evilClubBG = new BGSprite('bigmonika/BG', 'doki', -220, -110, 1, 1);
+					evilClubBG.setGraphicSize(Std.int(evilClubBG.width * 1.3));
+					evilClubBG.visible = false;
+					add(evilClubBG);
+
+					if (!SaveData.lowEnd)
+					{
+						clubroomdark = new BGSprite('bigmonika/shadow', 'doki', -220, -110, 1, 1);
+						clubroomdark.setGraphicSize(Std.int(clubroomdark.width * 1.3));
+						clubroomdark.visible = false;
+
+						windowlight = new BGSprite('bigmonika/WindowLightEvil', 'doki', -220, -110, 1, 1);
+						windowlight.setGraphicSize(Std.int(windowlight.width * 1.3));
+						windowlight.visible = false;
+						add(windowlight);
+					}
 
 					evilPoem = new BGSprite('badending/PaperBG', 'doki', -220, -110, 1, 1, ['PaperBG'], true);
 					evilPoem.setGraphicSize(Std.int(evilPoem.width * 1.3));
@@ -1994,11 +2146,11 @@ class PlayState extends MusicBeatState
 					glitchfront.setGraphicSize(Std.int(glitchfront.width * 1.3));
 					glitchfront.visible = false;
 
-					bgScribbly = new BGSprite('bigmonika/BGsketch', 'doki', -220, -110, 1, 1, ['BGSketch'], true);
-					bgScribbly.setGraphicSize(Std.int(bgScribbly.width * 1.3));
-					bgScribbly.visible = false;
-					bgScribbly.alpha = 0;
-					add(bgScribbly);
+					evilClubBGScribbly = new BGSprite('bigmonika/BGsketch', 'doki', -220, -110, 1, 1, ['BGSketch'], true);
+					evilClubBGScribbly.setGraphicSize(Std.int(evilClubBGScribbly.width * 1.3));
+					evilClubBGScribbly.visible = false;
+					evilClubBGScribbly.alpha = 0;
+					add(evilClubBGScribbly);
 
 					if (!SaveData.lowEnd)
 					{
@@ -2010,19 +2162,10 @@ class PlayState extends MusicBeatState
 				}
 		}
 
-		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && !SaveData.lowEnd)
+		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
 		{
-			//staticlol = new StaticShader();
-			//camGame.setFilters([new ShaderFilter(staticlol)]);
-			// camCache.setFilters([new ShaderFilter(staticlol)]);
-			//staticlol.alpha.value = [staticAlpha];
-
-			daStatic = new BGSprite('daSTAT', 'preload', 0, 0, 1.0, 1.0, ['staticFLASH'], true);
-			daStatic.cameras = [camHUD];
-			daStatic.setGraphicSize(FlxG.width, FlxG.height);
-			daStatic.screenCenter();
-			daStatic.alpha = 0.0001;
-			add(daStatic);
+			camGame.filters = [new ShaderFilter(staticlol)];
+			staticlol.alpha.value = [staticAlpha];
 		}
 
 		//Gonna hide some of this stuff for performance reasons.
@@ -2217,6 +2360,7 @@ class PlayState extends MusicBeatState
 				addCharacterToList("yuri-closeup");
 				addCharacterToList("bf-sad");
 				addCharacterToList("gf-markov");
+				addCharacterToList('gameover-markov'); //Not a thingie
 			case 'home':
 				addCharacterToList("natsuki");
 				addCharacterToList("natsuki-sad");
@@ -2508,6 +2652,9 @@ class PlayState extends MusicBeatState
 			add(laneunderlay);
 		}
 
+		bloodStrums = new FlxTypedGroup<FlxSprite>();
+		add(bloodStrums);
+
 		strumLineNotes = new FlxTypedGroup<StrumNote>();
 		add(strumLineNotes);
 
@@ -2703,6 +2850,7 @@ class PlayState extends MusicBeatState
 		positionDisplay.cameras = [camHUD];
 		grpNoteSplashes.cameras = [camHUD];
 		strumLineNotes.cameras = [camHUD];
+		bloodStrums.cameras = [camHUD];
 		notes.cameras = [camHUD];
 		healthBar.cameras = [camHUD];
 		healthBarBG.cameras = [camHUD];
@@ -4743,7 +4891,7 @@ class PlayState extends MusicBeatState
 			{
 				staticlol.iTime.value = [iTime];
 
-				if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && !SaveData.lowEnd)
+				if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
 					staticlol.alpha.value = [staticAlpha];
 			}
 
@@ -5780,6 +5928,11 @@ class PlayState extends MusicBeatState
 		{
 			pixelShitPart1 = 'poemUI/';
 			pixelShitPart2 = '-poem';
+		}
+		else if (isEvilUI || curStyle == 'evil')
+		{
+			pixelShitPart1 = 'evilUI/';
+			pixelShitPart2 = '';
 		}
 		else
 		{
@@ -7902,13 +8055,13 @@ class PlayState extends MusicBeatState
 						case 64:
 							metadataDisplay.tweenOut();
 						case 288:
-							sketchswap(2);
+							stagnantEvents('evil');
 							set_songSpeed(1.4);
 						case 544:
-							sketchswap(3);
+							stagnantEvents('default');
 							set_songSpeed(2.8);
 						case 800:
-							sketchswap(2);
+							stagnantEvents('evil');
 							set_songSpeed(1.4);
 						case 1056:
 							set_songSpeed(1.8);
@@ -7917,25 +8070,25 @@ class PlayState extends MusicBeatState
 						case 1184:
 							set_songSpeed(2.8);
 						case 1312:
-							sketchswap(1);
+							stagnantEvents('poem');
 						case 1824:
-							sketchswap(0);
+							stagnantEvents('evil');
 						case 2336:
-							sketchswap(1);
+							stagnantEvents('poem');
 					}
-				case 'markov':
-					switch (curStep)
-					{
-						case 1:
-							markovswap(0);
-						case 117:
-							dad.playAnim('appear', true);
-						case 433:
-							markovswap(2);
-						case 447:
-							set_songSpeed(2.8);
-						case 449:
-							markovswap(1);
+				//case 'markov':
+				//	switch (curStep)
+				//	{
+					//	case 1:
+					//		markovswap(0);
+					//	case 117:
+					//		dad.playAnim('appear', true);
+					//	case 433:
+					//		markovswap(2);
+					//	case 447:
+					//		set_songSpeed(2.8);
+					//	case 449:
+					//		markovswap(1);
 					//	case 800:
 					//		sketchswap(2);
 					//	case 1312:
@@ -7944,7 +8097,7 @@ class PlayState extends MusicBeatState
 					//		sketchswap(0);
 					//	case 2336:
 					//		sketchswap(1);
-					}
+				//	}
 		}
 	}
 
@@ -9100,186 +9253,202 @@ class PlayState extends MusicBeatState
 		});
 	}
 
-	function glitchIncrease(increase:Int):Void
+	function stagnantEvents(event:String)
 	{
-		switch(increase)
+		isEvilUI = false;
+		isPoemUI = false;
+		curStyle = SONG.noteStyle;
+		gf.visible = true;
+		switch (event)
 		{
-			case 0:
-				FlxTween.tween(daStatic, {alpha: 0.65}, 3.5, {ease: FlxEase.circOut});
-			case 1:
-				FlxTween.cancelTweensOf(daStatic);
-				daStatic.visible = false;
-			case 2:
-				FlxTween.cancelTweensOf(daStatic);
-				daStatic.visible = true;
-			case 3:
-				FlxTween.cancelTweensOf(daStatic);
-				remove(daStatic);
-		}
-	}
+			default:
+				evilStageSwap('default');
 
-	function sketchswap(swap:Int)
-	{
-		switch(swap)
-		{
-			case 0:
-				isPoemUI = false;
-				defaultCamZoom = 1;
+				addcharacter("bf-doki", 0);
+				addcharacter("sayori", 1);
+				gf.playAnim('danceLeft', false);
+			case 'evil':
+				isEvilUI = true;
+				curStyle = 'evil';
+				evilStageSwap('evil');
+				//strumSkinSwap(SONG.noteStyle);
 
-				gf.visible = true;
-				addcharacter("sayori-sad", 1);
 				addcharacter("bf-sad", 0);
+				addcharacter("sayori-sad", 1);
 				gf.playAnim('necksnap', true);
-
-				// thank u vs sunday code! (credits to bbpanzu)
-				remove(strumLineNotes);
-				strumLineNotes = new FlxTypedGroup<StrumNote>();
-				strumLineNotes.cameras = [camHUD];
-				add(strumLineNotes);
-
-				playerStrums = new FlxTypedGroup<StrumNote>();
-				opponentStrums = new FlxTypedGroup<StrumNote>();
-
-				curStyle = SONG.noteStyle;
-				generateStaticArrows(0, SONG.noteStyle, false);
-				generateStaticArrows(1, SONG.noteStyle, false);
-
-				healthBarBG.loadGraphic(Paths.image('healthBar', 'preload'));
-				healthBarBG.offset.set(0, 0);
-
-				positionDisplay.songPosBG.loadGraphic(Paths.image('timeBar', 'preload'));
-				positionDisplay.songPosBG.offset.set(0, 0);
-
-				bg.visible = true;
-				evilPoem.visible = false;
-			case 1:
+			case 'poem':
 				isPoemUI = true;
-				defaultCamZoom = 1.2;
+				curStyle = 'sketch';
+				evilStageSwap('poem');
+				//strumSkinSwap('sketch');
 
 				gf.visible = false;
-				addcharacter("sayoro-poem", 1);
 				addcharacter("bf-poem", 0);
-
-				// thank u vs sunday code! (credits to bbpanzu)
-				remove(strumLineNotes);
-				strumLineNotes = new FlxTypedGroup<StrumNote>();
-				strumLineNotes.cameras = [camHUD];
-				add(strumLineNotes);
-
-				playerStrums = new FlxTypedGroup<StrumNote>();
-				opponentStrums = new FlxTypedGroup<StrumNote>();
-
-				curStyle = 'sketch';
-				generateStaticArrows(0, 'sketch', false);
-				generateStaticArrows(1, 'sketch', false);
-
-				healthBarBG.loadGraphic(Paths.image(pixelShitPart1 + 'healthBar' + pixelShitPart1, 'shared'));
-				healthBarBG.offset.set(10, 12.5);
-
-				positionDisplay.songPosBG.loadGraphic(Paths.image(pixelShitPart1 + 'timeBar' + pixelShitPart1, 'shared'));
-				positionDisplay.songPosBG.offset.set(10, 12.5);
-
-				bg.visible = false;
-				evilPoem.visible = true;
-			case 2:
-				defaultCamZoom = 1;
-
-				gf.visible = true;
-				addcharacter("sayori-sad", 1);
-				addcharacter("bf-sad", 0);
-				gf.playAnim('necksnap', true);
-
-				clubmainlight.visible = false;
-				closet.visible = false;
-				clubroom.visible = false;
-				deskfront.visible = false;
-				bg.visible = true;
-			case 3:
-				defaultCamZoom = 0.75;
-
-				gf.visible = true;
-				addcharacter("sayori", 1);
-				addcharacter("bf-doki", 0);
-				gf.playAnim('necksnap', false);
-
-				clubmainlight.visible = true;
-				closet.visible = true;
-				clubroom.visible = true;
-				deskfront.visible = true;
-				bg.visible = false;
+				addcharacter("sayori-poem", 1);
 		}
 	}
 
-		function markovswap(swap:Int)
+	function evilStageSwap(swap:String, ?swap2:Float)
+	{
+		//defaultCamZoom = defaultStageZoom;
+		//FlxG.camera.zoom = defaultStageZoom;
+
+		// Considering all songs this should be shared
+		evilClubBG.visible = false;
+		evilClubBGScribbly.visible = false;
+		evilPoem.visible = false;
+
+		switch (curStage) // per stage stuff
 		{
-			switch (swap)
-			{
-				case 0:
-					isPoemUI = false;
-					defaultCamZoom = 1;
-
-					gf.visible = true;
-					addcharacter("yuri-closet", 1);
-					addcharacter("bf-sad", 0);
-
-					// thank u vs sunday code! (credits to bbpanzu)
-					remove(strumLineNotes);
-					strumLineNotes = new FlxTypedGroup<StrumNote>();
-					strumLineNotes.cameras = [camHUD];
-					add(strumLineNotes);
-
-					playerStrums = new FlxTypedGroup<StrumNote>();
-					opponentStrums = new FlxTypedGroup<StrumNote>();
-
-					curStyle = SONG.noteStyle;
-					generateStaticArrows(0, SONG.noteStyle, false);
-					generateStaticArrows(1, SONG.noteStyle, false);
-
-					healthBarBG.loadGraphic(Paths.image('healthBar', 'preload'));
-					healthBarBG.offset.set(0, 0);
-
-					positionDisplay.songPosBG.loadGraphic(Paths.image('timeBar', 'preload'));
-					positionDisplay.songPosBG.offset.set(0, 0);
-
-					bg.visible = true;
-					boyfriend.visible = false;
-					dad.visible = true;
-					gf.visible = false;
-				case 1:
-					isPoemUI = false;
-					defaultCamZoom = 1.2;
-
-					gf.visible = true;
-					addcharacter("yuri-crazy", 1);
-					addcharacter("bf-sad", 0);
-					gf.playAnim('necksnap', true);
-
-
-					bg.visible = true;
-					dad.visible = true;
-					boyfriend.visible = true;
-				case 2:
-					defaultCamZoom = 1;
-
-					gf.visible = false;
-					addcharacter("yuri-closeup", 1);
-					addcharacter("bf-sad", 0);
-
-					bg.visible = true;
-					boyfriend.visible = false;
-					dad.visible = true;
-				case 3:
-					defaultCamZoom = 0.75;
-
-					gf.visible = true;
-					addcharacter("yuri-crazy", 1);
-					addcharacter("bf-sad", 0);
-					addcharacter("gf-markov", 2);
-
-					bg.visible = true;
-					boyfriend.visible = true;
-			}
+			case 'home':
+				if (!SaveData.lowEnd)
+				{
+					deskfront.visible = false;
+					space.visible = false;
+					clouds.visible = false;
+					fancyclouds.visible = false;
+					windowlight.visible = false;
+					clubroomdark.visible = false;
+					bgwindo.visible = false;
+					bgwindo2.visible = false;
+				}
+				stageStatic.visible = false;
+				ruinedClubBG.visible = false;
+				glitchfront.visible = false;
+				glitchback.visible = false;
+				closet.visible = false;
+				clubroom.visible = false;
+				inthenotepad.visible = false;
+				notepadoverlay.visible = false;
+				boyfriend.x = BF_X;
+				boyfriend.y = BF_Y;
+			case 'markov':
+				closetCloseUp.visible = false;
+				GameOverSubstate.markovGameover = false;
+			case 'stagnant':
+				if (!SaveData.lowEnd)
+				{
+					deskfront.visible = false;
+					space.visible = false;
+					clouds.visible = false;
+					fancyclouds.visible = false;
+					windowlight.visible = false;
+					clubroomdark.visible = false;
+				}
+				closet.visible = false;
+				clubroom.visible = false;
 		}
+
+		evilClubBGScribbly.alpha = 0.0001;
+
+		switch (swap)
+		{
+			default:
+				closet.visible = true;
+				clubroom.visible = true;
+				if (!SaveData.lowEnd)
+					deskfront.visible = true;
+			case 'evil':
+				defaultCamZoom = 0.8;
+				FlxG.camera.zoom = 0.8;
+				if (!SaveData.lowEnd)
+				{
+					space.visible = true;
+					clouds.visible = true;
+					fancyclouds.visible = true;
+					windowlight.visible = true;
+					clubroomdark.visible = true;
+				}
+				evilClubBG.visible = true;
+				evilClubBGScribbly.visible = true;
+			case 'poem':
+				defaultCamZoom = 0.9;
+				FlxG.camera.zoom = 0.9;
+				evilPoem.visible = true;
+			case 'markovpoem':
+				defaultCamZoom = 0.9;
+				FlxG.camera.zoom = 0.9;
+				evilPoem.visible = true;
+				bloodyBG.alpha = 1;
+				bloodyBG.animation.play('bgBlood');
+				//screenPulse.alpha = 1;
+				funnyEyes.setGraphicSize(Std.int(bloodyBG.width * 1.3));
+				funnyEyes.cameras = [camGame];
+				funnyEyes.alpha = 1;
+				GameOverSubstate.markovGameover = true;
+			case 'closet':
+				defaultCamZoom = 1.0;
+				FlxG.camera.zoom = 1.0;
+				closetCloseUp.visible = true;
+				GameOverSubstate.markovGameover = true;
+			case 'ruined' | 'ruinedclub':
+				defaultCamZoom = 0.8;
+				FlxG.camera.zoom = 0.8;
+				stageStatic.visible = true;
+				if (!SaveData.lowEnd)
+				{
+					bgwindo.visible = true;
+					bgwindo2.visible = true;
+				}
+				ruinedClubBG.visible = true;
+				glitchfront.visible = true;
+				glitchback.visible = true;
+			case 'notepad':
+				// fates are written, cause pandora didn't listen, time will march here with me, the screams of last you'll ever see
+				// I will kill you, I am marty the armidillou,the stinky smells won't deter me, I will drink all your pee
+				defaultCamZoom = 1.0;
+				FlxG.camera.zoom = 1.0;
+				// We are going to lock the camera for this event
+				stageStatic.visible = true;
+				if (!SaveData.lowEnd)
+				{
+					bgwindo.visible = true;
+					bgwindo2.visible = true;
+				}
+				inthenotepad.visible = true;
+				notepadoverlay.visible = true;
+				//camFollow.set(650, 360);
+				boyfriend.x = 430;
+				boyfriend.y = -140;
+			case 'void':
+				defaultCamZoom = 0.9;
+				FlxG.camera.zoom = 0.9;
+			// basically don't unhide anything lmao
+			case 'redstatic':
+				defaultCamZoom = 0.9;
+				FlxG.camera.zoom = 0.9;
+				stageStatic.visible = true;
+		}
+
+		if (swap2 > 0)
+		{
+			FlxTween.tween(evilClubBGScribbly, {alpha: 1}, swap2, {
+				ease: FlxEase.sineIn,
+				onComplete: function(twn:FlxTween)
+				{
+					evilClubBGScribbly.alpha = 1;
+				}
+			});
+		}
+	}
+
+	function strumSkinSwap(style:String, tweenBool:Bool = false)
+	{
+		if (style == '' || style == null)
+			return;
+
+		remove(strumLineNotes);
+		strumLineNotes = new FlxTypedGroup<StrumNote>();
+		strumLineNotes.cameras = [camHUD];
+		add(strumLineNotes);
+
+		playerStrums = new FlxTypedGroup<StrumNote>();
+		opponentStrums = new FlxTypedGroup<StrumNote>();
+
+		curStyle = style;
+		generateStaticArrows(0, style, tweenBool);
+		generateStaticArrows(1, style, tweenBool);
+	}
 	// Bad Ending Function end here
 
 	function oneMore()

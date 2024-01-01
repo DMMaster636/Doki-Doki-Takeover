@@ -25,6 +25,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	var isBig:Bool = false;
 
 	public static var crashdeath:Bool = false;
+	public static var markovGameover:Bool = false;
 
 	public function new(x:Float, y:Float, goType:Int)
 	{		
