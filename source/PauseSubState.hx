@@ -448,7 +448,7 @@ class PauseSubState extends MusicBeatSubstate
 						else
 							MusicBeatState.switchState(new EvilFreeplayState());
 					}
-				case "Easy" | "Normal" | "Hard":
+				case "Easy" | "Normal" | "Hard" | "Unfair":
 					try
 					{
 						PlayState.SONG = Song.loadFromJson(Highscore.formatSong(PlayState.SONG.song, curSelected),

@@ -61,7 +61,7 @@ class EvilTitleState extends MusicBeatState
 	{
 		if (!initialized)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
+			FlxG.sound.playMusic(Paths.music('menuEvil'), 0);
 			Conductor.changeBPM(82.5);
 			FlxG.sound.music.fadeIn(2, 0, 0.7);
 		}
@@ -91,6 +91,7 @@ class EvilTitleState extends MusicBeatState
 		logoBl = new FlxSprite(320, 0);
 		logoBl.frames = Paths.getSparrowAtlas('logoBadEnding');
 		logoBl.antialiasing = SaveData.globalAntialiasing;
+		logoBl.setGraphicSize(Std.int(logoBl.width * 0.8));
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, true);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();

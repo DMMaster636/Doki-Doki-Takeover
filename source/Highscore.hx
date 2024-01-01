@@ -116,6 +116,8 @@ class Highscore
 			daSong += '-easy';
 		else if (diff == 2)
 			daSong += '-hard';
+		else if (diff == 3)
+			daSong += '-unfair';
 
 		return daSong;
 	}
@@ -128,6 +130,8 @@ class Highscore
 			daSong += '-easy';
 		else if (diff == 2)
 			daSong += '-hard';
+		else if (diff == 3)
+			daSong += '-unfair';
 
 		if (PlayState.mirrormode)
 			daSong += '-mirror';

@@ -74,6 +74,12 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		Conductor.songPosition = 0;
 
+		if (markovGameover)
+		{
+			daBf = 'gameover-markov';
+			FlxG.camera.zoom = 0.9;
+		}
+
 		if (!libbie)
 		{
 			bf = new Character(x, y, daBf, !isBig);
@@ -81,6 +87,8 @@ class GameOverSubstate extends MusicBeatSubstate
 			add(bf);
 
 			var gameoverSound:String = (mirrormode ? bf.winsound : bf.deathsound);
+
+			if (markovGameover) gameoverSound = 'YuriWatchesYouDie';
 
 			camFollow = new FlxObject(bf.getGraphicMidpoint().x, bf.getGraphicMidpoint().y, 1, 1);
 			add(camFollow);
@@ -155,9 +163,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		super.update(elapsed);
 
 		if (controls.ACCEPT && !crashdeath)
-		{
 			endBullshit();
-		}
 
 		if (controls.BACK && !crashdeath)
 		{
@@ -190,18 +196,13 @@ class GameOverSubstate extends MusicBeatSubstate
 			if (!daBf.startsWith('bigmonika'))
 			{
 				if (bf.animation.curAnim.name == 'hey' && bf.animation.curAnim.curFrame == 7)
-				{
 					FlxG.camera.follow(camFollow, LOCKON, 0.01);
-				}
+
 				if (bf.animation.curAnim.name == 'singUP' && bf.animation.curAnim.curFrame == 5)
-				{
 					FlxG.camera.follow(camFollow, LOCKON, 0.01);
-				}
 
 				if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
-				{
 					FlxG.camera.follow(camFollow, LOCKON, 0.01);
-				}
 			}
 
 			if ((bf.animation.curAnim.name == 'firstDeath' || bf.animation.curAnim.name == 'hey') && bf.animation.curAnim.finished && !crashdeath && !startSong)
@@ -211,9 +212,7 @@ class GameOverSubstate extends MusicBeatSubstate
 			}
 
 			if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished && FlxG.sound.music.playing)
-			{
 				bf.playAnim('deathLoop');
-			}
 		}
 		else
 		{
@@ -225,9 +224,7 @@ class GameOverSubstate extends MusicBeatSubstate
 		}
 
 		if (FlxG.sound.music.playing)
-		{
 			Conductor.songPosition = FlxG.sound.music.time;
-		}
 	}
 
 	override function beatHit()

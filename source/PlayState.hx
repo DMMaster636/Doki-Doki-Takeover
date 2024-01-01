@@ -403,7 +403,11 @@ class PlayState extends MusicBeatState
 
 	// Bad Ending
 	var daStatic:BGSprite;
+	var stagstatic:BGSprite;
+	var screenPulse:BGSprite;
+	var holylight:BGSprite;
 	var staticAlpha:Float = 0;
+	var bloodDrips:Bool = false;
 
 	var swagShader:ColorSwap = new ColorSwap();
 
@@ -417,6 +421,8 @@ class PlayState extends MusicBeatState
 	var stageStatic:BGSprite;
 	var bgwindo:FlxBackdrop;
 	var bgwindo2:FlxBackdrop;
+	var cambgwindo:FlxBackdrop;
+	var cambgwindo2:FlxBackdrop;
 	var inthenotepad:BGSprite; // dead meme, lol
 	var notepadoverlay:BGSprite;
 	var glitchback:BGSprite;
@@ -2395,14 +2401,6 @@ class PlayState extends MusicBeatState
 		
 		add(preloadGroup);
 
-		if (SONG.song.toLowerCase() == 'obsession')
-		{
-			// blackScreenBG
-			insert(members.indexOf(gf) + 1, blackScreenBG);
-			add(blackScreentwo);
-			blackScreentwo.visible = false;
-		}
-
 		switch (curStage)
 		{
 			case 'va11halla':
@@ -2498,11 +2496,80 @@ class PlayState extends MusicBeatState
 				cg2Light.cameras = [camHUD];
 				add(cg2Light);
 
-
 				whiteflash.makeGraphic(FlxG.width * 3, FlxG.height * 3, FlxColor.WHITE);
 				whiteflash.alpha = 0.0001;
 				whiteflash.cameras = [camHUD];
 				add(whiteflash);
+			case 'home':
+				if (!SaveData.lowEnd) add(clubroomdark);
+				add(notepadoverlay);
+				add(glitchfront);
+			case 'stagnant' | 'markov':
+				if (!SaveData.lowEnd) add(clubroomdark);
+		}
+
+		switch (SONG.song.toLowerCase())
+		{
+			case 'obsession':
+				// blackScreenBG
+				insert(members.indexOf(gf) + 1, blackScreenBG);
+				add(blackScreentwo);
+				blackScreentwo.visible = false;
+
+			case 'stagnant' | 'markov' | 'home':
+				//stealing this from DDTO
+				vignette = new FlxSprite(0, 0).loadGraphic(Paths.image('vignette', 'doki'));
+				vignette.scrollFactor.set();
+				vignette.cameras = [camHUD];
+				vignette.alpha = 0.00001;
+				add(vignette);
+
+				screenPulse = new BGSprite('vignetteend', 'doki', 0, 0, 1, 1);
+				screenPulse.cameras = [camHUD];
+				screenPulse.setGraphicSize(FlxG.width, FlxG.height);
+				screenPulse.screenCenter();
+				screenPulse.alpha = 0.0001;
+				add(screenPulse);
+
+				daStatic = new BGSprite('daSTAT', 'preload', 0, 0, 1.0, 1.0, ['staticFLASH'], true);
+				daStatic.cameras = [camHUD];	
+				daStatic.setGraphicSize(FlxG.width, FlxG.height);
+				daStatic.screenCenter();
+				daStatic.alpha = 0.0001;
+				add(daStatic);
+
+				redStatic = new BGSprite('ruinedclub/HomeStatic', 'doki', 0, 0, 1, 1, ['HomeStatic'], true);
+				redStatic.cameras = [camHUD];
+				redStatic.setGraphicSize(FlxG.width, FlxG.height);
+				redStatic.screenCenter();
+				redStatic.alpha = 0.0001;
+				add(redStatic);
+
+				cambgwindo = new FlxBackdrop(Paths.image('ruinedclub/bgwindows2', 'doki'));
+				cambgwindo.velocity.set(-40, 0);
+				cambgwindo.antialiasing = SaveData.globalAntialiasing;
+				cambgwindo.alpha = 0.0001;
+				add(cambgwindo);
+
+				cambgwindo2 = new FlxBackdrop(Paths.image('ruinedclub/bgwindows', 'doki'));
+				cambgwindo2.velocity.set(-60, 0);
+				cambgwindo2.antialiasing = SaveData.globalAntialiasing;
+				cambgwindo2.alpha = 0.0001;
+				add(cambgwindo2);
+
+				stagstatic = new BGSprite('badending/stagnant_glitch', 'doki', 0, 0, 1.0, 1.0, ['sadface 2'], false);
+				stagstatic.cameras = [camHUD];
+				stagstatic.setGraphicSize(FlxG.width, FlxG.height);
+				stagstatic.screenCenter();
+				stagstatic.alpha = 0.0001;
+				add(stagstatic);
+
+				holylight = new BGSprite('deadlight', 'doki', 0, 0, 1, 1);
+				holylight.cameras = [camHUD];
+				holylight.setGraphicSize(FlxG.width, FlxG.height);
+				holylight.screenCenter();
+				holylight.alpha = 0.0001;
+				add(holylight);
 		}
 
 		funnTextGroup = new FlxTypedGroup<FlxText>();
@@ -9371,7 +9438,7 @@ class PlayState extends MusicBeatState
 				evilPoem.visible = true;
 				bloodyBG.alpha = 1;
 				bloodyBG.animation.play('bgBlood');
-				//screenPulse.alpha = 1;
+				screenPulse.alpha = 1;
 				funnyEyes.setGraphicSize(Std.int(bloodyBG.width * 1.3));
 				funnyEyes.cameras = [camGame];
 				funnyEyes.alpha = 1;

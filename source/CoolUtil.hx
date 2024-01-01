@@ -28,7 +28,8 @@ class CoolUtil
 		var difficultyArray:Array<String> = [
 			LangUtil.getString('cmnEasy'),
 			LangUtil.getString('cmnNormal'),
-			LangUtil.getString('cmnHard')
+			LangUtil.getString('cmnHard'),
+			LangUtil.getString('cmnUnfair')
 		];
 
 		return difficultyArray[diff];
@@ -36,7 +37,7 @@ class CoolUtil
 
 	public static function internalDifficultyString(diff:Int):String
 	{
-		var difficultyArray:Array<String> = ['Easy', 'Normal', 'Hard'];
+		var difficultyArray:Array<String> = ['Easy', 'Normal', 'Hard', 'Unfair'];
 		return difficultyArray[diff];
 	}
 

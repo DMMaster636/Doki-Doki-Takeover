@@ -36,6 +36,7 @@ class EvilFreeplayState extends MusicBeatState
 	var curSelected:Int = 0;
 	var isDiffSelect:Bool = false;
 	var curDifficulty:Int = 0;
+	var difficultyAGAIN:Int = 0;
 
 	var sayori:FlxSprite;
 	var natsuki:FlxSprite;
@@ -108,11 +109,10 @@ class EvilFreeplayState extends MusicBeatState
 			loadDiff(2, meta.songName, diffs);
 			songData.set(meta.songName, diffs);
 
-			if ((Std.parseInt(data[2]) <= SaveData.weekUnlocked - 1) || (Std.parseInt(data[2]) == 1))
-				songs.push(meta);
+			songs.push(meta);
 		}
 
-		var evilSpace:FlxBackdrop = new FlxBackdrop(Paths.image('bigmonika/Sky', 'doki'));
+		var evilSpace:FlxBackdrop = new FlxBackdrop(Paths.image('bigmonika/SkyEvil', 'doki'));
 		evilSpace.velocity.set(-10, 0);
 		evilSpace.antialiasing = SaveData.globalAntialiasing;
 		add(evilSpace);
@@ -130,17 +130,17 @@ class EvilFreeplayState extends MusicBeatState
 		redStatic.alpha = 0.001;
 		add(redStatic);
 
-		natsuki = new FlxSprite().loadGraphic(Paths.image('freeplay/natsu', 'preload'));
+		natsuki = new FlxSprite().loadGraphic(Paths.image('freeplay/badending/natsu', 'preload'));
 		natsuki.setPosition(37, 0);
 		natsuki.antialiasing = SaveData.globalAntialiasing;
 		add(natsuki);
 
-		yuri = new FlxSprite().loadGraphic(Paths.image('freeplay/yuri', 'preload'));
+		yuri = new FlxSprite().loadGraphic(Paths.image('freeplay/badending/yuri', 'preload'));
 		yuri.setPosition(177, 0);
 		yuri.antialiasing = SaveData.globalAntialiasing;
 		add(yuri);
 
-		sayori = new FlxSprite().loadGraphic(Paths.image('freeplay/sayso', 'preload'));
+		sayori = new FlxSprite().loadGraphic(Paths.image('freeplay/badending/sayso', 'preload'));
 		sayori.setPosition(107, 0);
 		sayori.antialiasing = SaveData.globalAntialiasing;
 		add(sayori);
@@ -194,8 +194,6 @@ class EvilFreeplayState extends MusicBeatState
 		changeSelection();
 		changeDiff();
 
-		var swag:Alphabet = new Alphabet(1, 0, "swag");
-
 		var textBG:FlxSprite = new FlxSprite(0, FlxG.height - 26).makeGraphic(FlxG.width, 26, 0xFF000000);
 		textBG.alpha = 0.6;
 		add(textBG);
@@ -211,6 +209,7 @@ class EvilFreeplayState extends MusicBeatState
 		text.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, RIGHT);
 		text.scrollFactor.set();
 		add(text);
+
 		super.create();
 	}
 
@@ -287,7 +286,14 @@ class EvilFreeplayState extends MusicBeatState
 
 			if (controls.ACCEPT && songs.length >= 1)
 			{
-				startsong();
+				if (isDiffSelect)
+					startsong();
+				else {
+					changeDiff();
+					isDiffSelect = true;
+					FlxG.sound.play(Paths.sound('confirmMenu'));
+					diffstuff.visible = true;
+				}
 			}
 		}
 
@@ -306,14 +312,14 @@ class EvilFreeplayState extends MusicBeatState
 
 	function loadSong(isCharting:Bool = false)
 	{
-		var poop:String = Highscore.formatSong(songs[curSelected].songName, curDifficulty);
+		var poop:String = Highscore.formatSong(songs[curSelected].songName, difficultyAGAIN);
 
 		PlayState.isStoryMode = false;
 
 		try
 		{
 			PlayState.SONG = Song.loadFromJson(poop, songs[curSelected].songName.toLowerCase());
-			PlayState.storyDifficulty = curDifficulty + 1;
+			PlayState.storyDifficulty = difficultyAGAIN;
 		}
 		catch (e)
 		{
@@ -346,9 +352,11 @@ class EvilFreeplayState extends MusicBeatState
 		if (curDifficulty >= difficulties.length)
 			curDifficulty = 0;
 
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		difficultyAGAIN = curDifficulty + 2;
 
-		PlayState.storyDifficulty = curDifficulty;
+		intendedScore = Highscore.getScore(songs[curSelected].songName, difficultyAGAIN);
+
+		PlayState.storyDifficulty = difficultyAGAIN;
 		diffstuff.text = '< ' + difficulties[curDifficulty] + ' >';
 		positionHighscore();
 
@@ -364,17 +372,17 @@ class EvilFreeplayState extends MusicBeatState
 		{
 			trace("funny harder moder ");
 			redStatic.alpha = 1;
-			natsuki.loadGraphic(Paths.image('freeplay/natsuunfair', 'preload'));
-			yuri.loadGraphic(Paths.image('freeplay/yuriunfair', 'preload'));
-			sayori.loadGraphic(Paths.image('freeplay/saysounfair', 'preload'));
+			natsuki.loadGraphic(Paths.image('freeplay/badending/natsuunfair', 'preload'));
+			yuri.loadGraphic(Paths.image('freeplay/badending/yuriunfair', 'preload'));
+			sayori.loadGraphic(Paths.image('freeplay/badending/saysounfair', 'preload'));
 		}
 		else
 		{
 			trace("goku goes supersaiyan ");
 			redStatic.alpha = 0.001;
-			natsuki.loadGraphic(Paths.image('freeplay/natsu', 'preload'));
-			yuri.loadGraphic(Paths.image('freeplay/yuri', 'preload'));
-			sayori.loadGraphic(Paths.image('freeplay/sayso', 'preload'));
+			natsuki.loadGraphic(Paths.image('freeplay/badending/natsu', 'preload'));
+			yuri.loadGraphic(Paths.image('freeplay/badending/yuri', 'preload'));
+			sayori.loadGraphic(Paths.image('freeplay/badending/sayso', 'preload'));
 		}
 	}
 
@@ -389,7 +397,9 @@ class EvilFreeplayState extends MusicBeatState
 
 		// selector.y = (70 * curSelected) + 30;
 
-		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedScore = Highscore.getScore(songs[curSelected].songName, difficultyAGAIN);
+
+		getSongData(songs[curSelected].songName, difficultyAGAIN);
 
 		var bullShit:Int = 0;
 
@@ -436,6 +446,11 @@ class EvilFreeplayState extends MusicBeatState
 				natsukitween = FlxTween.color(natsuki, 0.25, natsuki.color, 0xFF444444);
 				sayoritween = FlxTween.color(sayori, 0.25, sayori.color, 0xFF444444);
 		}
+	}
+
+	function getSongData(songName:String, diff:Int)
+	{
+		intendedScore = Highscore.getScore(songName, diff);
 	}
 
 	function playSong()
