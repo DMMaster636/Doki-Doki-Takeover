@@ -8143,28 +8143,20 @@ class PlayState extends MusicBeatState
 						case 2336:
 							stagnantEvents('poem');
 					}
-				//case 'markov':
-				//	switch (curStep)
-				//	{
-					//	case 1:
-					//		markovswap(0);
-					//	case 117:
-					//		dad.playAnim('appear', true);
-					//	case 433:
-					//		markovswap(2);
-					//	case 447:
-					//		set_songSpeed(2.8);
-					//	case 449:
-					//		markovswap(1);
-					//	case 800:
-					//		sketchswap(2);
-					//	case 1312:
-					//		sketchswap(1);
-					//	case 1824:
-					//		sketchswap(0);
-					//	case 2336:
-					//		sketchswap(1);
-				//	}
+				/*case 'markov':
+					switch (curStep)
+					{
+						case 1:
+							markovEvents(0);
+						case 117:
+							dad.playAnim('appear', true);
+						case 433:
+							markovEvents(2);
+						case 447:
+							set_songSpeed(2.8);
+						case 449:
+							markovEvents(1);
+					}*/
 		}
 	}
 
@@ -9355,6 +9347,55 @@ class PlayState extends MusicBeatState
 				gf.visible = false;
 				addcharacter("bf-poem", 0);
 				addcharacter("sayori-poem", 1);
+		}
+	}
+
+	function markovEvents(swap:Int)
+	{
+		switch (swap)
+		{
+			case 0:
+				defaultCamZoom = 1;
+
+				gf.visible = true;
+				addcharacter("yuri-closet", 1);
+				addcharacter("bf-sad", 0);
+
+				bg.visible = true;
+				boyfriend.visible = false;
+				dad.visible = true;
+				gf.visible = false;
+			case 1:
+				defaultCamZoom = 1.2;
+
+				gf.visible = true;
+				addcharacter("yuri-crazy", 1);
+				addcharacter("bf-sad", 0);
+				gf.playAnim('necksnap', true);
+
+				bg.visible = true;
+				dad.visible = true;
+				boyfriend.visible = true;
+			case 2:
+				defaultCamZoom = 1;
+
+				gf.visible = false;
+				addcharacter("yuri-closeup", 1);
+				addcharacter("bf-sad", 0);
+
+				bg.visible = true;
+				boyfriend.visible = false;
+				dad.visible = true;
+			case 3:
+				defaultCamZoom = 0.75;
+
+				gf.visible = true;
+				addcharacter("yuri-crazy", 1);
+				addcharacter("bf-sad", 0);
+				addcharacter("gf-markov", 2);
+
+				bg.visible = true;
+				boyfriend.visible = true;
 		}
 	}
 
