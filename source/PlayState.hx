@@ -2168,11 +2168,11 @@ class PlayState extends MusicBeatState
 				}
 		}
 
-		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
+		/*if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
 		{
 			camGame.filters = [new ShaderFilter(staticlol)];
 			staticlol.alpha.value = [staticAlpha];
-		}
+		}*/
 
 		//Gonna hide some of this stuff for performance reasons.
 		if (curStage == 'school' || curStage == 'wilted' || curStage == 'schoolEvilEX')
@@ -2231,6 +2231,9 @@ class PlayState extends MusicBeatState
 			Character.loadaltcostume = !isStoryMode && SaveData.beatProtag;
 		else
 			Character.loadaltcostume = true;
+
+		if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
+			Character.loadaltcostume = false;
 
 		// managing the bg dokis here
 		if (bgDokis != null)
@@ -4271,7 +4274,7 @@ class PlayState extends MusicBeatState
 					if (curStage == "dokiglitcher" || (curStage == "wilted" && (gottaHitNote && !mirrormode || !gottaHitNote && mirrormode)))
 						noteStyle = "pixel";
 
-					if (curStage == "dokiclubroom" && SONG.song.toLowerCase() == 'stagnant')
+					if (curStage == "stagnant")
 						noteStyle = "sketch";
 				}
 				else if (curStage == "wilted" && (gottaHitNote && mirrormode || !gottaHitNote && !mirrormode))
@@ -5381,26 +5384,26 @@ class PlayState extends MusicBeatState
 				if (!mirrormode)
 				{				
 					if (healthBar.percent > 90)
-						iconP1.animation.curAnim.curFrame = 2;
+						iconP1.updateIconAnim(2);
 					else if (healthBar.percent < 20)
-						iconP1.animation.curAnim.curFrame = 1;
+						iconP1.updateIconAnim(1);
 					else
-						iconP1.animation.curAnim.curFrame = 0;
+						iconP1.updateIconAnim(0);
 				}
 				else
 				{
 					if (healthBar.percent < 10)
-						iconP1.animation.curAnim.curFrame = 2;
+						iconP1.updateIconAnim(2);
 					else if (healthBar.percent > 80)
-						iconP1.animation.curAnim.curFrame = 1;
+						iconP1.updateIconAnim(1);
 					else
-						iconP1.animation.curAnim.curFrame = 0;
+						iconP1.updateIconAnim(0);
 				}
 
 				if (!SaveData.beatEpiphany)
-					iconP2.animation.curAnim.curFrame = 1;
+					iconP2.updateIconAnim(1);
 				else
-					iconP2.animation.curAnim.curFrame = 0;
+					iconP2.updateIconAnim(0);
 			}
 			else
 			{
@@ -5408,56 +5411,56 @@ class PlayState extends MusicBeatState
 				{
 					if (healthBar.percent < 10)
 					{
-						iconP1.animation.curAnim.curFrame = 1;
-						iconP2.animation.curAnim.curFrame = happyEnding ? 1 : 2;
+						iconP1.updateIconAnim(1);
+						iconP2.updateIconAnim(happyEnding ? 1 : 2);
 					}
 					else if (healthBar.percent < 20)
 					{
-						iconP1.animation.curAnim.curFrame = 1;
-						iconP2.animation.curAnim.curFrame = 0;
+						iconP1.updateIconAnim(1);
+						iconP2.updateIconAnim(0);
 					}
 					else if (healthBar.percent > 90)
 					{
-						iconP1.animation.curAnim.curFrame = 2;
-						iconP2.animation.curAnim.curFrame = happyEnding ? 2 : 1;
+						iconP1.updateIconAnim(2);
+						iconP2.updateIconAnim(happyEnding ? 2 : 1);
 					}
 					else if (healthBar.percent > 80)
 					{
-						iconP1.animation.curAnim.curFrame = 0;
-						iconP2.animation.curAnim.curFrame = happyEnding ? 2 : 1;
+						iconP1.updateIconAnim(0);
+						iconP2.updateIconAnim(happyEnding ? 2 : 1);
 					}
 					else
 					{
-						iconP1.animation.curAnim.curFrame = 0;
-						iconP2.animation.curAnim.curFrame = 0;
+						iconP1.updateIconAnim(0);
+						iconP2.updateIconAnim(0);
 					}
 				}
 				else
 				{
 					if (healthBar.percent < 10)
 					{
-						iconP2.animation.curAnim.curFrame = 1;
-						iconP1.animation.curAnim.curFrame = happyEnding ? 1 : 2; 
+						iconP2.updateIconAnim(1);
+						iconP1.updateIconAnim(happyEnding ? 1 : 2); 
 					}
 					else if (healthBar.percent < 20)
 					{
-						iconP2.animation.curAnim.curFrame = 1;
-						iconP1.animation.curAnim.curFrame = 0;
+						iconP2.updateIconAnim(1);
+						iconP1.updateIconAnim(0);
 					}
 					else if (healthBar.percent > 90)
 					{
-						iconP2.animation.curAnim.curFrame = 2;
-						iconP1.animation.curAnim.curFrame = happyEnding ? 2 : 1;
+						iconP2.updateIconAnim(2);
+						iconP1.updateIconAnim(happyEnding ? 2 : 1);
 					}
 					else if (healthBar.percent > 80)
 					{
-						iconP2.animation.curAnim.curFrame = 0;
-						iconP1.animation.curAnim.curFrame = happyEnding ? 2 : 1;
+						iconP2.updateIconAnim(0);
+						iconP1.updateIconAnim(happyEnding ? 2 : 1);
 					}
 					else
 					{
-						iconP2.animation.curAnim.curFrame = 0;
-						iconP1.animation.curAnim.curFrame = 0;
+						iconP2.updateIconAnim(0);
+						iconP1.updateIconAnim(0);
 					}
 				}
 			}
@@ -5829,10 +5832,7 @@ class PlayState extends MusicBeatState
 						MusicBeatState.switchState(new ThankyouState());
 				}
 			}
-			else
-			{
-				switchSong();
-			}
+			else switchSong();
 		}
 		else
 		{
@@ -9324,30 +9324,30 @@ class PlayState extends MusicBeatState
 	{
 		isEvilUI = false;
 		isPoemUI = false;
-		curStyle = SONG.noteStyle;
 		gf.visible = true;
 		switch (event)
 		{
 			default:
 				evilStageSwap('default');
+				strumSkinSwap('default');
 
 				addcharacter("bf-doki", 0);
 				addcharacter("sayori", 1);
-				gf.playAnim('danceLeft', false);
+				gf.playAnim('danceLeft', true);
 			case 'evil':
 				isEvilUI = true;
-				curStyle = 'evil';
 				evilStageSwap('evil');
-				//strumSkinSwap(SONG.noteStyle);
+				strumSkinSwap('evil');
+				reloadUIGraphics('');
 
 				addcharacter("bf-sad", 0);
 				addcharacter("sayori-sad", 1);
 				gf.playAnim('necksnap', true);
 			case 'poem':
 				isPoemUI = true;
-				curStyle = 'sketch';
 				evilStageSwap('poem');
-				//strumSkinSwap('sketch');
+				strumSkinSwap('sketch');
+				reloadUIGraphics('poem', 10, 20, 10, 15);
 
 				gf.visible = false;
 				addcharacter("bf-poem", 0);
@@ -9515,6 +9515,52 @@ class PlayState extends MusicBeatState
 		curStyle = style;
 		generateStaticArrows(0, style, tweenBool);
 		generateStaticArrows(1, style, tweenBool);
+	}
+
+	function reloadUIGraphics(style:String, ?offsetX1:Float = 0, ?offsetY1:Float = 0, ?offsetX2:Float = 0, ?offsetY2:Float = 0)
+	{
+		reloadHealthBarGraphic(style, offsetX1, offsetY1);
+		reloadTimeBarGraphic(style, offsetX2, offsetY2);
+	}
+
+	function reloadHealthBarGraphic(style:String, ?offsetX:Float = 0, ?offsetY:Float = 0)
+	{
+		var path:String = 'healthBar';
+		if (style != '') path = 'poemUI/healthBar-poem';
+
+		var isAnimated = false;
+		if (Paths.fileExists('images/$path.xml', TEXT))
+			isAnimated = true;
+
+		if (isAnimated)
+		{
+			healthBarBG.frames = Paths.getSparrowAtlas(path);
+			healthBarBG.animation.addByPrefix('idle', 'healthBar', 24, true);
+			healthBarBG.animation.play('idle');
+		}
+		else healthBarBG.loadGraphic(Paths.image(path));
+
+		healthBarBG.offset.set(offsetX, offsetY);
+	}
+
+	function reloadTimeBarGraphic(style:String, ?offsetX:Float = 0, ?offsetY:Float = 0)
+	{
+		var path:String = 'timeBar';
+		if (style != '') path = 'poemUI/timeBar-poem';
+
+		var isAnimated = false;
+		if (Paths.fileExists('images/$path.xml', TEXT))
+			isAnimated = true;
+
+		if (isAnimated)
+		{
+			positionDisplay.songPosBG.frames = Paths.getSparrowAtlas(path);
+			positionDisplay.songPosBG.animation.addByPrefix('idle', 'timeBar', 24, true);
+			positionDisplay.songPosBG.animation.play('idle');
+		}
+		else positionDisplay.songPosBG.loadGraphic(Paths.image(path));
+
+		positionDisplay.songPosBG.offset.set(offsetX, offsetY);
 	}
 	// Bad Ending Function end here
 

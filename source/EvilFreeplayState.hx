@@ -85,7 +85,7 @@ class EvilFreeplayState extends MusicBeatState
 
 		if (!FlxG.sound.music.playing && !SaveData.cacheSong)
 		{
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			FlxG.sound.playMusic(Paths.music('menuEvil'));
 			Conductor.changeBPM(82.5);
 		}
 

@@ -90,12 +90,11 @@ class EvilTitleState extends MusicBeatState
 
 		logoBl = new FlxSprite(320, 0);
 		logoBl.frames = Paths.getSparrowAtlas('logoBadEnding');
-		logoBl.antialiasing = SaveData.globalAntialiasing;
 		logoBl.setGraphicSize(Std.int(logoBl.width * 0.8));
+		logoBl.antialiasing = SaveData.globalAntialiasing;
 		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24, true);
 		logoBl.animation.play('bump');
 		logoBl.updateHitbox();
-		logoBl.screenCenter();
 		add(logoBl);
 
 		titleText = new FlxSprite(200, 576);

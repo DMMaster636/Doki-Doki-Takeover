@@ -12,11 +12,6 @@
 			"version": "8.1.1"
 		},
 		{
-			"name": "lime",
-			"type": "haxelib",
-			"version": "8.0.1"
-		},
-		{
 			"name": "openfl",
 			"type": "haxelib",
 			"version": "9.3.2"
@@ -57,14 +52,10 @@
 			"version": "2.5.0"
 		},
 		{
-			"name": "hscript",
-			"type": "haxelib"
-		},
-		{
 			"name": "hxCodec",
 			"type": "git",
 			"ref": "main",
-			"url": "https://github.com/Raltyro/hxCodec.git"
+			"url": "https://github.com/polybiusproxy/hxCodec.git"
 		},
 		{
 			"name": "discord_rpc",

@@ -97,6 +97,16 @@ class LangUtil
 					default:
 						font = 'vtks animal 2';
 				}
+			case 'chicken':
+				switch (SaveData.language)
+				{
+					case 'ru-RU':
+						font = 'Ubuntu Bold';
+					case 'jp-JP':
+						font = 'Noto Sans JP Medium';
+					default:
+						font = 'ChickenScratch AOE';
+				}
 			case 'lang': // https://github.com/satbyy/go-noto-universal
 				font = 'Go Noto Current Regular';
 		}

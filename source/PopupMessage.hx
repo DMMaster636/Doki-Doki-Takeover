@@ -19,7 +19,7 @@ class PopupMessage extends MusicBeatSubstate
 		['prologue', ['Prologue']],
 		['sayori', ['Sayo', 'GFCount']],
 		['natsuki', ['Nat', 'Nat2', 'Extra1']],
-		['yuri', ['Yuri', 'Extra2']],
+		['yuri', ['Yuri', 'Extra2', 'BadEnding']],
 		['monika', ['Monika']],
 		['festival', ['Festival', 'Mirror', 'Epiphany']],
 		['encore', ['Encore', 'Encore2']],

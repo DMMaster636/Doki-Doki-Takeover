@@ -212,11 +212,17 @@ class Note extends FlxSprite
 		if (texture.length < 1)
 			skin = 'NOTE_assets';
 
+		if (noteStyle != 'pixel' && noteType == 2)
+			if (noteStyle == 'sketch')
+				skin = 'poemUI/MARKOVNOTE_assets';
+			else
+				skin = 'MARKOVNOTE_assets';
+
 		if (noteStyle == 'lib' && noteType != 2)
 			skin = 'NOTE_assetsLibitina';
 
 		if (noteStyle == 'sketch' && noteType != 2)
-			skin = 'poemUI/NOTE_assetsPoem';
+			skin = 'poemUI/NOTE_assets';
 
 		var animName:String = null;
 

@@ -34,7 +34,7 @@ class EvilCreditsState extends MusicBeatState
 		DiscordClient.changePresence("In the Credits", null);
 		#end
 
-		bg = new FlxSprite().loadGraphic(Paths.image('credits/bg'));
+		bg = new FlxSprite().loadGraphic(Paths.image('creditsEvil/bg'));
 		bg.antialiasing = SaveData.globalAntialiasing;
 		add(bg);
 
@@ -174,7 +174,7 @@ class EvilCreditsState extends MusicBeatState
 
 			if (isSelectable)
 			{
-				var icon:AttachedSprite = new AttachedSprite('credits/icons/' + creditsStuff[i][1], 'idle');
+				var icon:AttachedSprite = new AttachedSprite('creditsEvil/icons/' + creditsStuff[i][1], 'idle');
 				icon.animation.addByPrefix('select', 'select', 24, false);
 				icon.xAdd = optionText.width + 10;
 				icon.yAdd = -optionText.height / 2;

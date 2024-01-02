@@ -12,6 +12,7 @@ class HealthIcon extends FlxSprite
 	public var isPlayer:Bool = false;
 	public var isOldIcon:Bool = false;
 	public var isHealth:Bool = true;
+	private var isAnimated:Bool = false;
 	public var sprTracker:FlxSprite;
 
 	private var iconOffsets:Array<Float> = [0, 0];
@@ -59,24 +60,47 @@ class HealthIcon extends FlxSprite
 		if (!Paths.fileExists('images/icons/icon-$daChar.png', IMAGE))
 			daChar = 'bf-old';
 
-		if (isHealth)
+		isAnimated = false;
+		if (Paths.fileExists('images/icons/icon-$daChar.xml', TEXT))
+			isAnimated = true;
+
+		if (!isAnimated)
 		{
-			loadGraphic(Paths.image('icons/icon-' + daChar));
-			loadGraphic(Paths.image('icons/icon-' + daChar), true, Math.floor(width / 3), Math.floor(height));
-			iconOffsets[0] = (width - 150) / 3;
-			iconOffsets[1] = (width - 150) / 3;
-			updateHitbox();
+			if (isHealth)
+			{
+				loadGraphic(Paths.image('icons/icon-' + daChar));
+				loadGraphic(Paths.image('icons/icon-' + daChar), true, Math.floor(width / 3), Math.floor(height));
+				iconOffsets[0] = (width - 150) / 3;
+				iconOffsets[1] = (width - 150) / 3;
+				updateHitbox();
+			}
+			else
+				loadGraphic(Paths.image('icons/icon-' + daChar), true, 150, 150);
+
+			animation.add(daChar, [0, 1, 2], 0, false, isPlayer);
+			animation.play(daChar);
 		}
 		else
-			loadGraphic(Paths.image('icons/icon-' + daChar), true, 150, 150);
-
-		animation.add(daChar, [0, 1, 2], 0, false, isPlayer);
-		animation.play(daChar);
+		{
+			frames = Paths.getSparrowAtlas('icons/icon-' + daChar, 'preload');
+			animation.addByPrefix('idle', 'idle', 24, true);
+			animation.addByPrefix('losing', 'losing', 24, true);
+			animation.addByPrefix('winning', 'winning', 24, true);
+			animation.play('idle');
+		}
 
 		if (SaveData.globalAntialiasing)
 			antialiasing = !pixelIcons.contains(daChar);
 
 		char = daChar; // gotta make sure the icon itself is actually the changed char
+	}
+
+	public function updateIconAnim(animState:Int)
+	{
+		if (isAnimated)
+			animation.play((animState == 1 ? 'losing' : animState == 2 ? 'winning' : 'idle'));
+		else
+			animation.curAnim.curFrame = animState;
 	}
 
 	override function updateHitbox()

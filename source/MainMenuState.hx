@@ -57,7 +57,7 @@ class MainMenuState extends MusicBeatState
 	var show:String = "";
 	var menuItems:FlxTypedGroup<FlxText>;
 
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'gallery', 'credits', 'options', 'exit'];
+	var optionShit:Array<String> = ['story mode', 'freeplay', 'gallery', 'credits', 'options', 'exit', 'switch'];
 
 	public static var firstStart:Bool = true;
 
@@ -96,6 +96,9 @@ class MainMenuState extends MusicBeatState
 
 		if (!SaveData.beatSide)
 			optionShit.remove('gallery');
+
+		if (!SaveData.beatYuri)
+			optionShit.remove('switch');
 
 		if (!SaveData.beatVA11HallA && SaveData.beatSide)
 			addVally = true;
@@ -239,6 +242,7 @@ class MainMenuState extends MusicBeatState
 			menuItem.antialiasing = SaveData.globalAntialiasing;
 			menuItem.setBorderStyle(OUTLINE, 0xFFFF7CFF, 2);
 			menuItem.ID = i;
+			if (optionShit[i] == 'switch') menuItem.visible = false;
 			menuItems.add(menuItem);
 
 			if (firstStart)
@@ -305,14 +309,8 @@ class MainMenuState extends MusicBeatState
 
 			if (logoBl != null && FlxG.mouse.overlaps(logoBl) && FlxG.mouse.justPressed && SaveData.beatYuri)
 			{
-				SaveData.badEndingSelected = true;
-				SaveData.save();
 				FlxG.sound.play(Paths.sound('confirmMenu'));
-
-				if (!SaveData.warningBadEnding)
-					MusicBeatState.switchState(new WarningState());
-				else
-					MusicBeatState.switchState(new EvilTitleState());
+				switchToBadEnding();
 			}
 
 			if (controls.UP_P)
@@ -370,6 +368,8 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new OptionsState());
 			case 'exit':
 				openSubState(new CloseGameSubState());
+			case 'switch':
+				switchToBadEnding();
 		}
 	}
 
@@ -427,6 +427,23 @@ class MainMenuState extends MusicBeatState
 				}
 			}
 		});
+	}
+
+	function switchToBadEnding()
+	{
+		SaveData.badEndingSelected = true;
+		SaveData.save();
+
+		FlxG.sound.music.fadeOut(0.75, 0, function(twn:FlxTween)
+		{
+			FlxG.sound.music.stop();
+		});
+		EvilTitleState.initialized = false;
+
+		if (!SaveData.warningBadEnding)
+			MusicBeatState.switchState(new WarningState());
+		else
+			MusicBeatState.switchState(new EvilTitleState());
 	}
 
 

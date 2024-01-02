@@ -40,7 +40,7 @@ class EvilMainMenuState extends MusicBeatState
 
 	var menuItems:FlxTypedGroup<FlxText>;
 
-	var optionShit:Array<String> = ['story mode', 'freeplay', 'gallery', 'credits', 'options', 'exit'];
+	var optionShit:Array<String> = ['story mode', 'freeplay', 'credits', 'options', 'exit', 'switch'];
 
 	public static var firstStart:Bool = true;
 
@@ -51,6 +51,8 @@ class EvilMainMenuState extends MusicBeatState
 
 	var backdrop:FlxBackdrop;
 	var logoBl:FlxSprite;
+	var vignette:FlxSprite;
+	var oof:FlxSprite;
 
 	public static var instance:EvilMainMenuState;
 
@@ -64,6 +66,11 @@ class EvilMainMenuState extends MusicBeatState
 		persistentUpdate = persistentDraw = true;
 
 		FlxG.mouse.visible = true;
+
+		if (!SaveData.beatBadEnding) {
+			optionShit.remove('freeplay');
+			optionShit.remove('credits');
+		}
 
 		#if FEATURE_DISCORD
 		// Updating Discord Rich Presence
@@ -79,7 +86,6 @@ class EvilMainMenuState extends MusicBeatState
 		backdrop = new FlxBackdrop(Paths.image('scrolling_BG'));
 		backdrop.velocity.set(-40, -40);
 		backdrop.antialiasing = SaveData.globalAntialiasing;
-		//backdrop.shader = new ColorMaskShader(0xFFFDFFFF, 0xFFFDDBF1);
 		add(backdrop);
 
 		var random:Int = FlxG.random.int(1, 100);
@@ -87,21 +93,14 @@ class EvilMainMenuState extends MusicBeatState
 
 		if (random == 64)
 		{
-			//Can't let my child go to waste :)
-			menu_character = new FlxSprite(-100, -250);
-			menu_character.loadGraphic(Paths.image('FumoEvil'));
+			// Can't let my child go to waste :)
+			menu_character = new FlxSprite(-100, -250).loadGraphic(Paths.image('FumoEvil'));
 			menu_character.screenCenter();
 			menu_character.x += 100;
-			menu_character.antialiasing = SaveData.globalAntialiasing;
-			menu_character.updateHitbox();
 		}
-		else
-		{
-			menu_character = new FlxSprite(460, 0);
-			menu_character.loadGraphic(Paths.image('GhostDokis'));
-			menu_character.antialiasing = SaveData.globalAntialiasing;
-			menu_character.updateHitbox();
-		}
+		else menu_character = new FlxSprite(460, 0).loadGraphic(Paths.image('GhostDokis'));
+		menu_character.antialiasing = SaveData.globalAntialiasing;
+		menu_character.updateHitbox();
 		add(menu_character);
 
 		logo = new FlxSprite(-260, 0).loadGraphic(Paths.image('Credits_LeftSide_Bad'));
@@ -147,8 +146,9 @@ class EvilMainMenuState extends MusicBeatState
 			var menuItem:FlxText = new FlxText(-350, 370 + (i * 50), 0, LangUtil.getString(optionShit[i], 'menu'));
 			menuItem.setFormat(LangUtil.getFont('riffic'), 27, FlxColor.WHITE, LEFT);
 			menuItem.antialiasing = SaveData.globalAntialiasing;
-			menuItem.setBorderStyle(OUTLINE, 0xFF9E9E9E, 2);
+			menuItem.setBorderStyle(OUTLINE, 0xFF444444, 2);
 			menuItem.ID = i;
+			if (optionShit[i] == 'switch') menuItem.visible = false;
 			menuItems.add(menuItem);
 
 			if (firstStart)
@@ -169,12 +169,21 @@ class EvilMainMenuState extends MusicBeatState
 
 		add(mouseManager);
 
-		var versionShit:FlxText = new FlxText(-350, FlxG.height - 24, 0, "v" + Application.current.meta.get('version'), 12);
+		var versionShit:FlxText = new FlxText(-350, FlxG.height - 24, 0, "v1.5.1", 12);
 		versionShit.scrollFactor.set();
 		versionShit.antialiasing = SaveData.globalAntialiasing;
 		versionShit.setFormat(LangUtil.getFont('aller'), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionShit.y += LangUtil.getFontOffset('aller');
 		add(versionShit);
+
+		oof = new FlxSprite(0, 0).loadGraphic(Paths.image('DonTabOut'));
+		oof.screenCenter();
+		oof.alpha = 0.0001;
+		add(oof);
+
+		vignette = new FlxSprite(0, 0).loadGraphic(Paths.image('menuvignette'));
+		vignette.alpha = 0.6;
+		add(vignette);
 
 		if (firstStart)
 			FlxTween.tween(versionShit, {x: 5}, 1.2, {
@@ -204,14 +213,8 @@ class EvilMainMenuState extends MusicBeatState
 		{
 			if (logoBl != null && FlxG.mouse.overlaps(logoBl) && FlxG.mouse.justPressed)
 			{
-				SaveData.badEndingSelected = false;
-				SaveData.save();
 				FlxG.sound.play(Paths.sound('confirmMenu'));
-
-				FlxG.sound.music.fadeOut(0.75, 0, function(twn:FlxTween){FlxG.sound.music.stop();});
-				TitleState.initialized = false;
-
-				MusicBeatState.switchState(new TitleState());
+				switchToDDTO();
 			}
 
 			if (controls.UP_P)
@@ -257,19 +260,22 @@ class EvilMainMenuState extends MusicBeatState
 				loadStoryWeek();
 				trace("Story Menu Selected");
 			case 'freeplay':
-				if(SaveData.beatBadEnding)
-					MusicBeatState.switchState(new EvilFreeplayState());
+				MusicBeatState.switchState(new EvilFreeplayState());
 				trace("Freeplay Menu Selected");
 			case 'credits':
-				MusicBeatState.switchState(new EvilCreditsState());
+				if (FlxG.keys.pressed.G)
+				{
+					CoolUtil.openURL('https://www.youtube.com/watch?v=0MW9Nrg_kZU');
+					FlxG.resetState();
+				} else
+					MusicBeatState.switchState(new EvilCreditsState());
 				trace("Credits Menu Selected");
-			case 'gallery':
-				MusicBeatState.switchState(new GalleryArtState());
-				trace("La Galeria Selected");
 			case 'options':
 				MusicBeatState.switchState(new OptionsState());
 			case 'exit':
 				openSubState(new CloseGameSubState());
+			case 'switch':
+				switchToDDTO();
 		}
 	}
 
@@ -285,9 +291,9 @@ class EvilMainMenuState extends MusicBeatState
 		menuItems.forEach(function(txt:FlxText)
 		{
 			if (txt.ID == curSelected)
-				txt.setBorderStyle(OUTLINE, 0xFFC5C5C5, 2);
+				txt.setBorderStyle(OUTLINE, 0xFFFF0513, 2);
 			else
-				txt.setBorderStyle(OUTLINE, 0xFF9E9E9E, 2);
+				txt.setBorderStyle(OUTLINE, 0xFF444444, 2);
 		});
 	}
 
@@ -329,9 +335,23 @@ class EvilMainMenuState extends MusicBeatState
 		});
 	}
 
+	function switchToDDTO()
+	{
+		SaveData.badEndingSelected = false;
+		SaveData.save();
+
+		FlxG.sound.music.fadeOut(0.75, 0, function(twn:FlxTween)
+		{
+			FlxG.sound.music.stop();
+		});
+		TitleState.initialized = false;
+
+		MusicBeatState.switchState(new TitleState());
+	}
+
 	function loadStoryWeek()
 	{
-		PlayState.storyPlaylist = ['stagnant', 'markov', 'home'];
+		PlayState.storyPlaylist = ['STAGNANT', 'MARKOV', 'HOME'];
 		PlayState.storyDifficulty = 2;
 
 		PlayState.ForceDisableDialogue = false;
@@ -340,13 +360,10 @@ class EvilMainMenuState extends MusicBeatState
 
 		var poop:String = Highscore.formatSong(PlayState.storyPlaylist[0], PlayState.storyDifficulty);
 
-		try
-		{
+		try {
 			PlayState.SONG = Song.loadFromJson(poop, PlayState.storyPlaylist[0].toLowerCase());
-		}
-		catch (e)
-		{
-			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase(), PlayState.storyPlaylist[0].toLowerCase());
+		} catch (e) {
+			PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0].toLowerCase() + '-hard', PlayState.storyPlaylist[0].toLowerCase());
 		}
 
 		PlayState.storyWeek = 13;
@@ -381,5 +398,35 @@ class EvilMainMenuState extends MusicBeatState
 		super.beatHit();
 
 		logoBl.animation.play('bump', true);
+	}
+
+	var focused:Bool = true;
+	var funnyTimer:FlxTimer;
+
+	override public function onFocusLost():Void
+	{
+		trace('we tabbed out');
+		if (focused == true)
+		{
+			focused = false;
+			funnyTimer = new FlxTimer().start(5, function(tmr:FlxTimer)
+			{
+				FlxTween.tween(oof, {alpha: 1}, 0.5, {ease: FlxEase.circOut});
+			});
+		}
+		super.onFocusLost();
+	}
+
+	override public function onFocus():Void
+	{
+		trace('we tabbed in');
+		if (focused == false)
+		{
+			funnyTimer.cancel();
+			focused = true;
+			FlxTween.cancelTweensOf(oof);
+			FlxTween.tween(oof, {alpha: 0.0001}, 0.1, {ease: FlxEase.circOut});
+		}
+		super.onFocus();
 	}
 }
