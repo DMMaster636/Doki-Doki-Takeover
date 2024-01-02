@@ -2361,7 +2361,7 @@ class PlayState extends MusicBeatState
 				addCharacterToList("ghost");
 			case 'stagnant':
 				addCharacterToList("sayori-sad");
-				addCharacterToList("sayoro-poem");
+				addCharacterToList("sayori-poem");
 				addCharacterToList("bf-sad");
 				addCharacterToList("bf-poem");
 			case 'markov':
@@ -8870,6 +8870,9 @@ class PlayState extends MusicBeatState
 					case 'musicroom':
 						camFollow.x = 716;
 						camFollow.y = 413;
+					case 'stagnant':
+						camFollow.x = 640;
+						camFollow.y = 440;
 					default:
 						camFollow.x = 640;
 						camFollow.y = 360;

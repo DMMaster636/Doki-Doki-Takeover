@@ -87,6 +87,7 @@ class HealthIcon extends FlxSprite
 			animation.addByPrefix('losing', 'losing', 24, true);
 			animation.addByPrefix('winning', 'winning', 24, true);
 			animation.play('idle');
+			flipX = isPlayer;
 		}
 
 		if (SaveData.globalAntialiasing)
