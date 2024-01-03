@@ -4,6 +4,6 @@
         "artist": "Matt$",
         "icon": "pen-evil",
         "pause": "yuri-crazy",
-        "allowCountDown": false
+        "playManually": true
     }
 }

@@ -4,6 +4,6 @@
         "artist": "Kallionic",
         "icon": "pen-evil",
         "pause": "natsuki-crazy",
-        "allowCountDown": false
+        "playManually": true
     }
 }

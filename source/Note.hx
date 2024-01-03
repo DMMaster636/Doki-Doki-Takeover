@@ -184,7 +184,7 @@ class Note extends FlxSprite
 			earlyHitMult = 1;
 
 		// markov note
-		if (noteType == 2 && !mirrormode)
+		if ((noteType == 2 || noteType == 7) && !mirrormode)
 		{
 			lateHitMult = 0.3;
 			earlyHitMult = 0.2;
@@ -212,16 +212,16 @@ class Note extends FlxSprite
 		if (texture.length < 1)
 			skin = 'NOTE_assets';
 
-		if (noteStyle != 'pixel' && noteType == 2)
+		if (noteStyle != 'pixel' && (noteType == 2 || noteType == 7))
 			if (noteStyle == 'sketch')
 				skin = 'poemUI/MARKOVNOTE_assets';
 			else
 				skin = 'MARKOVNOTE_assets';
 
-		if (noteStyle == 'lib' && noteType != 2)
+		if (noteStyle == 'lib' && noteType != 2 && noteType != 7)
 			skin = 'NOTE_assetsLibitina';
 
-		if (noteStyle == 'sketch' && noteType != 2)
+		if (noteStyle == 'sketch' && noteType != 2 && noteType != 7)
 			skin = 'poemUI/NOTE_assets';
 
 		var animName:String = null;
@@ -283,7 +283,7 @@ class Note extends FlxSprite
 	{
 		switch (noteType)
 		{
-			case 2:
+			case 2 | 7:
 				animation.addByPrefix('greenScroll', 'markov green0');
 				animation.addByPrefix('redScroll', 'markov red0');
 				animation.addByPrefix('blueScroll', 'markov blue0');
@@ -344,7 +344,7 @@ class Note extends FlxSprite
 		{
 			switch (noteType)
 			{
-				case 2:
+				case 2 | 7:
 					animation.add('greenScroll', [GREEN_NOTE + 20]);
 					animation.add('redScroll', [RED_NOTE + 20]);
 					animation.add('blueScroll', [BLUE_NOTE + 20]);
@@ -383,7 +383,7 @@ class Note extends FlxSprite
 				}
 			}
 		}
-		else if (!SaveData.mirrorMode || (SaveData.mirrorMode && noteType != 2))
+		else if (!SaveData.mirrorMode || (SaveData.mirrorMode && noteType != 2 && noteType != 7))
 		{
 			canBeHit = false;
 

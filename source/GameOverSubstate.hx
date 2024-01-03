@@ -178,10 +178,19 @@ class GameOverSubstate extends MusicBeatSubstate
 			PlayState.toggleBotplay = false;
 			PlayState.ForceDisableDialogue = false;
 
-			if (PlayState.isStoryMode)
-				MusicBeatState.switchState(new DokiStoryState());
+			if (!SaveData.badEndingSelected) {
+				if (PlayState.isStoryMode)
+					MusicBeatState.switchState(new DokiStoryState());
+				else
+					MusicBeatState.switchState(new DokiFreeplayState());
+			}
 			else
-				MusicBeatState.switchState(new DokiFreeplayState());
+			{
+				if (PlayState.isStoryMode)
+					MusicBeatState.switchState(new EvilMainMenuState());
+				else
+					MusicBeatState.switchState(new EvilFreeplayState());
+			}
 		}
 		if (!libbie)
 		{

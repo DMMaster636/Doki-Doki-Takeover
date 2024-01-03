@@ -430,6 +430,10 @@ class PlayState extends MusicBeatState
 	var glitchfront:BGSprite;
 	var evilPoem:BGSprite;
 
+	var imdead:FlxSprite;
+	var darkScreen:FlxSprite;
+	var titleCard:FlxSprite;
+
 	var altAnim:String = "";
 	var fc:Bool = true;
 
@@ -2370,6 +2374,7 @@ class PlayState extends MusicBeatState
 				addCharacterToList("bf-sad");
 				addCharacterToList("gf-markov");
 				addCharacterToList('gameover-markov'); //Not a thingie
+				CoolUtil.precacheSound('stab');
 			case 'home':
 				addCharacterToList("natsuki");
 				addCharacterToList("natsuki-sad");
@@ -2938,6 +2943,33 @@ class PlayState extends MusicBeatState
 		if (curStage == 'dokiclubroom' && staticshock != null)
 			add(staticshock);
 
+		switch (curSong.toLowerCase())
+		{
+			case 'stagnant' | 'markov' | 'home': //This is for the dark start thing
+				if (curSong.toLowerCase() == 'home') {
+					imdead = new FlxSprite(0, 0).loadGraphic(Paths.image('everyoneisdead', 'doki'));
+					imdead.scrollFactor.set();
+					imdead.cameras = [camHUD];
+					imdead.alpha = 0.00001;
+					add(imdead);
+				}
+
+				darkScreen = new FlxSprite(0, 0).makeGraphic(Std.int(FlxG.width * 2), Std.int(FlxG.height * 2), FlxColor.BLACK);
+				add(darkScreen);
+				darkScreen.cameras = [camHUD];
+
+				titleCard = new FlxSprite();
+				titleCard.frames = Paths.getSparrowAtlas('titlecards/${curSong.toLowerCase()}', 'doki'); // curSong
+				titleCard.animation.addByPrefix('idle', 'card', 24, true);
+				titleCard.animation.play('idle');
+				titleCard.antialiasing = SaveData.globalAntialiasing;
+				titleCard.cameras = [camOverlay];
+				titleCard.screenCenter();
+				titleCard.alpha = 0.001;
+				titleCard.scale.set(0.8,0.8);
+				add(titleCard);
+		}
+
 		startingSong = true;
 		isintro = true;
 		if (showCutscene && !ForceDisableDialogue)
@@ -3272,9 +3304,6 @@ class PlayState extends MusicBeatState
 				else
 					startCountdown();
 			case 'stagnant':
-				blackScreen.cameras = [camOverlay];
-				add(blackScreen);
-
 				if (isStoryMode)
 					playbackCutscene('beintro', 0);
 				else
@@ -3978,134 +4007,160 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				switch (swagCounter)
+				if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
 				{
-					case 0:
-						if (metadataDisplay != null)
-						{
-							if ((hasMetadata && !metadata.song.playManually) || !hasMetadata)
-								metadataDisplay.tweenIn();
-						}
-						else
-							trace('uhhhh that metadata display is null');
-
-						if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
-							FlxG.sound.play(Paths.sound('intro3' + glitchSuffix), 0.6);
-						else
-							FlxG.sound.play(Paths.sound('intro3' + altSuffix), 0.6);
-
-						if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
-							gf.playAnim('countdownThree');
-					case 1:
-						var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
-						ready.scrollFactor.set();
-						ready.cameras = [camHUD];
-
-						if (!curStage.startsWith('school'))
-						{
-							ready.setGraphicSize(Std.int(ready.width * 0.6));
-							ready.antialiasing = SaveData.globalAntialiasing;
-						}
-						else
-							ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
-
-						ready.updateHitbox();
-						ready.screenCenter();
-						add(ready);
-
-						FlxTween.tween(ready, {alpha: 0}, Conductor.crochet / 1000, {
-							ease: FlxEase.cubeInOut,
-							onComplete: function(twn:FlxTween)
+					switch (swagCounter)
+					{
+						case 0:
+							if (titleCard != null)
 							{
-								ready.destroy();
+								FlxTween.tween(titleCard, {alpha: 1, 'scale.x': 1, 'scale.y': 1}, 3, {
+									ease: FlxEase.cubeOut,
+									onComplete: function(twn:FlxTween)
+									{
+										FlxTween.tween(titleCard, {alpha: 0}, 2, {
+											ease: FlxEase.cubeOut,
+											startDelay: 1,
+											onComplete: function(twn:FlxTween)
+											{
+												remove(titleCard);
+												titleCard.destroy();
+											}
+										});
+									}
+								});
 							}
-						});
-
-						if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
-							FlxG.sound.play(Paths.sound('intro2' + glitchSuffix), 0.6);
-						else
-							FlxG.sound.play(Paths.sound('intro2' + altSuffix), 0.6);
-
-						if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
-							gf.playAnim('countdownTwo');
-					case 2:
-						var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
-						set.scrollFactor.set();
-						set.cameras = [camHUD];
-
-						if (!curStage.startsWith('school'))
-						{
-							set.setGraphicSize(Std.int(set.width * 0.6));
-							set.antialiasing = SaveData.globalAntialiasing;
-						}
-						else
-							set.setGraphicSize(Std.int(set.width * daPixelZoom));
-
-						set.updateHitbox();
-						set.screenCenter();
-						add(set);
-
-						FlxTween.tween(set, {alpha: 0}, Conductor.crochet / 1000, {
-							ease: FlxEase.cubeInOut,
-							onComplete: function(twn:FlxTween)
-							{
-								set.destroy();
-							}
-						});
-
-						if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
-							FlxG.sound.play(Paths.sound('intro1' + glitchSuffix), 0.6);
-						else
-							FlxG.sound.play(Paths.sound('intro1' + altSuffix), 0.6);
-
-						if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
-							gf.playAnim('countdownOne');
-					case 3:
-						var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
-						go.scrollFactor.set();
-						go.cameras = [camHUD];
-
-						if (!curStage.startsWith('school'))
-						{
-							go.setGraphicSize(Std.int(go.width * 0.6));
-							go.antialiasing = SaveData.globalAntialiasing;
-						}
-						else
-							go.setGraphicSize(Std.int(go.width * daPixelZoom));
-
-						go.updateHitbox();
-						go.screenCenter();
-						add(go);
-
-						FlxTween.tween(go, {alpha: 0}, Conductor.crochet / 1000, {
-							ease: FlxEase.cubeInOut,
-							onComplete: function(twn:FlxTween)
-							{
-								go.destroy();
-							}
-						});
-
-						if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
-							FlxG.sound.play(Paths.sound('introGo' + glitchSuffix), 0.6);
-						else
-							FlxG.sound.play(Paths.sound('introGo' + altSuffix), 0.6);
-
-						if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
-							gf.playAnim('countdownGo');
-					case 4:
-						new FlxTimer().start(3, function(tmr:FlxTimer)
-						{
+					}
+				} else {
+					switch (swagCounter)
+					{
+						case 0:
 							if (metadataDisplay != null)
 							{
 								if ((hasMetadata && !metadata.song.playManually) || !hasMetadata)
-									metadataDisplay.tweenOut();
+									metadataDisplay.tweenIn();
 							}
 							else
-								trace('metadata display is still null my dude');
-						});
+								trace('uhhhh that metadata display is null');
 
-						if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
-							gf.dance();
+							if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
+								FlxG.sound.play(Paths.sound('intro3' + glitchSuffix), 0.6);
+							else
+								FlxG.sound.play(Paths.sound('intro3' + altSuffix), 0.6);
+
+							if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
+								gf.playAnim('countdownThree');
+						case 1:
+							var ready:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[0]));
+							ready.scrollFactor.set();
+							ready.cameras = [camHUD];
+
+							if (!curStage.startsWith('school'))
+							{
+								ready.setGraphicSize(Std.int(ready.width * 0.6));
+								ready.antialiasing = SaveData.globalAntialiasing;
+							}
+							else
+								ready.setGraphicSize(Std.int(ready.width * daPixelZoom));
+
+							ready.updateHitbox();
+							ready.screenCenter();
+							add(ready);
+
+							FlxTween.tween(ready, {alpha: 0}, Conductor.crochet / 1000, {
+								ease: FlxEase.cubeInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									ready.destroy();
+								}
+							});
+
+							if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
+								FlxG.sound.play(Paths.sound('intro2' + glitchSuffix), 0.6);
+							else
+								FlxG.sound.play(Paths.sound('intro2' + altSuffix), 0.6);
+
+							if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
+								gf.playAnim('countdownTwo');
+						case 2:
+							var set:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
+							set.scrollFactor.set();
+							set.cameras = [camHUD];
+
+							if (!curStage.startsWith('school'))
+							{
+								set.setGraphicSize(Std.int(set.width * 0.6));
+								set.antialiasing = SaveData.globalAntialiasing;
+							}
+							else
+								set.setGraphicSize(Std.int(set.width * daPixelZoom));
+
+							set.updateHitbox();
+							set.screenCenter();
+							add(set);
+
+							FlxTween.tween(set, {alpha: 0}, Conductor.crochet / 1000, {
+								ease: FlxEase.cubeInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									set.destroy();
+								}
+							});
+
+							if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
+								FlxG.sound.play(Paths.sound('intro1' + glitchSuffix), 0.6);
+							else
+								FlxG.sound.play(Paths.sound('intro1' + altSuffix), 0.6);
+
+							if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
+								gf.playAnim('countdownOne');
+						case 3:
+							var go:FlxSprite = new FlxSprite().loadGraphic(Paths.image(introAlts[2]));
+							go.scrollFactor.set();
+							go.cameras = [camHUD];
+
+							if (!curStage.startsWith('school'))
+							{
+								go.setGraphicSize(Std.int(go.width * 0.6));
+								go.antialiasing = SaveData.globalAntialiasing;
+							}
+							else
+								go.setGraphicSize(Std.int(go.width * daPixelZoom));
+
+							go.updateHitbox();
+							go.screenCenter();
+							add(go);
+
+							FlxTween.tween(go, {alpha: 0}, Conductor.crochet / 1000, {
+								ease: FlxEase.cubeInOut,
+								onComplete: function(twn:FlxTween)
+								{
+									go.destroy();
+								}
+							});
+
+							if (curStage.startsWith('schoolEvil') || curStage.startsWith('schoolEvilEX'))
+								FlxG.sound.play(Paths.sound('introGo' + glitchSuffix), 0.6);
+							else
+								FlxG.sound.play(Paths.sound('introGo' + altSuffix), 0.6);
+
+							if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
+								gf.playAnim('countdownGo');
+						case 4:
+							new FlxTimer().start(3, function(tmr:FlxTimer)
+							{
+								if (metadataDisplay != null)
+								{
+									if ((hasMetadata && !metadata.song.playManually) || !hasMetadata)
+										metadataDisplay.tweenOut();
+								}
+								else
+									trace('metadata display is still null my dude');
+							});
+
+							if (SaveData.gfCountdown && gf.curCharacter == 'gf-realdoki')
+								gf.dance();
+					}
 				}
 
 				swagCounter += 1;
@@ -5580,7 +5635,7 @@ class PlayState extends MusicBeatState
 				if (!daNote.mustPress && daNote.wasGoodHit && !daNote.hitByOpponent && !daNote.ignoreNote)
 					opponentNoteHit(daNote);
 
-				if (daNote.mustPress && toggleBotplay && (mirrormode || (!mirrormode && daNote.noteType != 2)))
+				if (daNote.mustPress && toggleBotplay && (mirrormode || (!mirrormode && daNote.noteType != 2 && daNote.noteType != 7)))
 				{
 					if (daNote.isSustainNote)
 					{
@@ -5616,7 +5671,7 @@ class PlayState extends MusicBeatState
 				// Kill extremely late notes and cause misses
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)
 				{
-					if (daNote.mustPress && !toggleBotplay && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit) && (mirrormode || (!mirrormode && daNote.noteType != 2)))
+					if (daNote.mustPress && !toggleBotplay && !daNote.ignoreNote && !endingSong && (daNote.tooLate || !daNote.wasGoodHit) && (mirrormode || (!mirrormode && daNote.noteType != 2 && daNote.noteType != 7)))
 						noteMiss(daNote);
 
 					daNote.active = false;
@@ -5916,7 +5971,7 @@ class PlayState extends MusicBeatState
 
 		switch (daNote.noteType)
 		{
-			case 2:
+			case 2 | 7:
 				if (!mirrormode)
 				{
 					health -= 100;
@@ -6211,7 +6266,7 @@ class PlayState extends MusicBeatState
 						if (daNote.noteData == key)
 							sortedNotesList.push(daNote);
 
-						if (mirrormode || (!mirrormode && daNote.noteType != 2))
+						if (mirrormode || (!mirrormode && daNote.noteType != 2 && daNote.noteType != 7))
 							canMiss = true;
 					}
 				});
@@ -6399,17 +6454,15 @@ class PlayState extends MusicBeatState
 			}
 		});
 
-		if (daNote.noteType == 2)
+		if (daNote.noteType == 2 || daNote.noteType == 7)
 		{
 			if (mirrormode)
 			{
 				if (SaveData.missModeType >= 1)
-				health -= 100;
+					health -= 100;
 				else
-				health -= 0.5;
+					health -= 0.5;
 			}
-				
-			
 		}
 		else
 		{
@@ -6572,6 +6625,20 @@ class PlayState extends MusicBeatState
 
 		switch (note.noteType)
 		{
+			case 8:
+				// nothing cus... no animation!
+
+			case 7:
+				if (bloodDrips && !note.isSustainNote)
+				{
+					FlxG.sound.play(Paths.sound('stab'));
+					var spr:FlxSprite;
+					spr = bloodStrums.members[Std.int(Math.abs(note.noteData))];
+					if (spr.animation.curAnim.name.startsWith('idle'))
+						spr.animation.play('drip');
+				}
+				char.playAnim(animToPlay, true);
+
 			case 5:
 				if (SONG.numofchar >= 4 && SONG.numofchar >= 3)
 				{
@@ -6652,74 +6719,86 @@ class PlayState extends MusicBeatState
 			var char:Character = boyfriend;
 			var animToPlay:String = singAnimations[Std.int(Math.abs(note.noteData))];
 
-			if (!mirrormode)
+			if (note.noteType != 8)
 			{
-				if (note != null && note.noteType == 6)
-					char = gf;
-
-				char.playAnim(animToPlay + altAnim, true);
-				char.holdTimer = 0;
-			}
-			else
-			{
-				if (note != null)
+				if (!mirrormode)
 				{
-					switch (note.noteType)
-					{
-						default:
-							char = dad;
-						case 3:
-							if (SONG.numofchar >= 3)
-								char = extrachar1;
-							else
-								char = gf;
-						case 4:
-							if (SONG.numofchar >= 4)
-								char = extrachar2;
-							else
-								char = gf;
-						case 6:
-							char = gf;
-					}
+					if (note != null && note.noteType == 6)
+						char = gf;
+
+					char.playAnim(animToPlay + altAnim, true);
+					char.holdTimer = 0;
 				}
 				else
-					char = dad;
-
-				if (curSong.toLowerCase().startsWith('love n funkin') && iconP2.char != char.healthIcon)
-					changeOpponentIcon(char);
-
-				switch (note.noteType)
 				{
-					case 5:
-						if (SONG.numofchar >= 4 && SONG.numofchar >= 3)
+					if (note != null)
+					{
+						switch (note.noteType)
 						{
-							if (mirrormode)
-								char.playAnim(animToPlay + altAnim, true);
-							else
+							default:
+								char = dad;
+							case 3:
+								if (SONG.numofchar >= 3)
+									char = extrachar1;
+								else
+									char = gf;
+							case 4:
+								if (SONG.numofchar >= 4)
+									char = extrachar2;
+								else
+									char = gf;
+							case 6:
+								char = gf;
+						}
+					}
+					else
+						char = dad;
+
+					if (curSong.toLowerCase().startsWith('love n funkin') && iconP2.char != char.healthIcon)
+						changeOpponentIcon(char);
+
+					switch (note.noteType)
+					{
+						case 7:
+							if (bloodDrips && !note.isSustainNote)
 							{
-								dad.playAnim(animToPlay, true);
-								extrachar1.playAnim(animToPlay + altAnim, true);
-								extrachar2.playAnim(animToPlay + altAnim, true);
+								FlxG.sound.play(Paths.sound('stab'));
+								var spr:FlxSprite;
+								spr = bloodStrums.members[Std.int(Math.abs(note.noteData))];
+								if (spr.animation.curAnim.name.startsWith('idle'))
+									spr.animation.play('drip');
 							}
-						}
+							char.playAnim(animToPlay, true);
 
-					case 2:
-						if (curSong.toLowerCase() == "obsession" && !yuriGoneCrazy)
-							char.playAnim(animToPlay + altAnim, true);
+						case 5:
+							if (SONG.numofchar >= 4 && SONG.numofchar >= 3)
+							{
+								if (mirrormode)
+									char.playAnim(animToPlay + altAnim, true);
+								else
+								{
+									dad.playAnim(animToPlay, true);
+									extrachar1.playAnim(animToPlay + altAnim, true);
+									extrachar2.playAnim(animToPlay + altAnim, true);
+								}
+							}
 
-					default:
-						if (mirrormode && curSong.toLowerCase() == 'takeover medley')
-						{
-							extrachar1.playAnim(animToPlay, true);
-							char.playAnim(animToPlay + altAnim, true);
-						}
-						else
-							char.playAnim(animToPlay + altAnim, true);
+						case 2:
+							if (curSong.toLowerCase() == "obsession" && !yuriGoneCrazy)
+								char.playAnim(animToPlay + altAnim, true);
 
-						
+						default:
+							if (mirrormode && curSong.toLowerCase() == 'takeover medley')
+							{
+								extrachar1.playAnim(animToPlay, true);
+								char.playAnim(animToPlay + altAnim, true);
+							}
+							else
+								char.playAnim(animToPlay + altAnim, true);
+					}
+
+					char.holdTimer = 0; 
 				}
-
-				char.holdTimer = 0; 
 			}
 
 			if (toggleBotplay)
@@ -8116,7 +8195,7 @@ class PlayState extends MusicBeatState
 					switch (curStep)
 					{
 						case 32:
-							blackScreen.visible = false;
+							darkScreen.visible = false;
 							metadataDisplay.tweenIn();
 							positionDisplay.tweenIn();
 						case 64:
@@ -8864,7 +8943,10 @@ class PlayState extends MusicBeatState
 						camFollow.y = 413;
 					case 'stagnant':
 						camFollow.x = 640;
-						camFollow.y = 440;
+						if (isEvilUI)
+							camFollow.y = 510;
+						else
+							camFollow.y = 440;
 					default:
 						camFollow.x = 640;
 						camFollow.y = 360;
@@ -9326,8 +9408,8 @@ class PlayState extends MusicBeatState
 				evilStageSwap('default');
 				strumSkinSwap('default');
 
-				addcharacter("bf-doki", 0);
-				addcharacter("sayori", 1);
+				addcharacter("bf-doki-other", 0);
+				addcharacter("sayori-other", 1);
 				gf.playAnim('danceLeft', true);
 			case 'evil':
 				isEvilUI = true;

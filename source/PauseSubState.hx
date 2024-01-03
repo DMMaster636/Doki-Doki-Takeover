@@ -320,8 +320,8 @@ class PauseSubState extends MusicBeatSubstate
 		}
 
 		if (SaveData.badEndingSelected) {
-			itmColor = 0xFF9E9E9E;
-			selColor = 0xFFC5C5C5;
+			itmColor = 0xFF444444;
+			selColor = 0xFFFF0513;
 		}
 
 		changeSelection();
