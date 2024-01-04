@@ -50,6 +50,8 @@ class EvilTitleState extends MusicBeatState
 		startIntro();
 
 		super.create();
+
+		openfl.Lib.application.window.title = "Friday Night Funkin': Doki Doki Takeover! - Bad Ending";
 	}
 
 	var logoBl:FlxSprite;

@@ -399,7 +399,7 @@ class SaveData
 	**/
 	inline public static function getBadEndSave():Bool
 	{
-		return getFlixelSave('Team TBD', 'DokiTakeover', 'teamtbd', 'badending') || getFlixelSave(null, null, 'TeamTBD', 'BadEnding', true);
+		return beatBadEnding || getFlixelSave('Team TBD', 'DokiTakeover', 'teamtbd', 'badending') || getFlixelSave(null, null, 'TeamTBD', 'BadEnding', true);
 	}
 
 	/**

@@ -94,6 +94,7 @@ class PlayState extends MusicBeatState
 
 	var midsongcutscene:Bool = false;
 
+	public var songSpeedTween:FlxTween;
 	private var constantScroll:Bool = false;
 	public var songSpeed(default, set):Float = 1;
 	public var noteKillOffset:Float = 350;
@@ -2172,11 +2173,12 @@ class PlayState extends MusicBeatState
 				}
 		}
 
-		/*if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
+		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
 		{
 			camGame.filters = [new ShaderFilter(staticlol)];
 			staticlol.alpha.value = [staticAlpha];
-		}*/
+			camGame.filtersEnabled = false;
+		}
 
 		//Gonna hide some of this stuff for performance reasons.
 		if (curStage == 'school' || curStage == 'wilted' || curStage == 'schoolEvilEX')
@@ -4497,6 +4499,8 @@ class PlayState extends MusicBeatState
 
 			if (startTimer != null && !startTimer.finished)
 				startTimer.active = false;
+			if (songSpeedTween != null)
+				songSpeedTween.active = false;
 		}
 
 		super.openSubState(SubState);
@@ -4523,6 +4527,8 @@ class PlayState extends MusicBeatState
 
 			if (startTimer != null && !startTimer.finished)
 				startTimer.active = true;
+			if (songSpeedTween != null)
+				songSpeedTween.active = true;
 
 			paused = false;
 
@@ -8200,27 +8206,128 @@ class PlayState extends MusicBeatState
 							positionDisplay.tweenIn();
 						case 64:
 							metadataDisplay.tweenOut();
+						case 256:
+							glitchEffectEvil(0.5);
+							glitchIncrease(1);
+						case 261:
+							glitchIncrease(2);
+						case 264:
+							glitchEffectEvil(0.5);
+							glitchIncrease(2);
+						case 276 | 532 | 788:
+							stagnantGlitch();
+						case 280:
+							glitchEffectEvil(0.2);
+						case 284:
+							glitchEffectEvil(0.3);
+							glitchIncrease(3);
+						case 287:
+							glitchIncrease(4);
 						case 288:
 							stagnantEvents('evil');
-							set_songSpeed(1.4);
+							changeCamZoom(1);
+							vignetteEffect(0.2);
+							changeScrollSpeed(0.66);
+						case 512:
+							glitchEffectEvil(0.5);
+							glitchIncrease(1);
+						case 518:
+							glitchIncrease(2);
+						case 536:
+							changeScrollSpeed(1, 0.5);
+							glitchIncrease(3);
+						case 543:
+							glitchIncrease(4);
 						case 544:
 							stagnantEvents('default');
-							set_songSpeed(2.8);
+							glitchIncrease(3);
+						case 768:
+							glitchEffectEvil(0.5);
+							glitchIncrease(1);
+						case 773:
+							glitchIncrease(2);
+						case 776:
+							glitchEffectEvil(0.5);
+							glitchIncrease(3);
+						case 784:
+							glitchIncrease(4);
+						case 792:
+							glitchIncrease(3);
+						case 795:
+							glitchIncrease(4);
 						case 800:
 							stagnantEvents('evil');
-							set_songSpeed(1.4);
+							changeCamZoom(1);
+							vignetteEffect(0.3);
+							changeScrollSpeed(0.66);
 						case 1056:
-							set_songSpeed(1.8);
-						case 1100:
-							set_songSpeed(2.4);
-						case 1184:
-							set_songSpeed(2.8);
+							evilStageSwap('evil', 2);
+							changeCamZoom(0.8);
+							changeScrollSpeed(1.1, 3);
+						case 1300:
+							doPoemTransition();
+						case 1310:
+							changeCamZoom(1.2);
 						case 1312:
 							stagnantEvents('poem');
+							doPoemTransition();
+							vignetteEffect(0);
+							addCamZoom(0.03, 0.03);
+						case 1696:
+							changeCamZoom(1);
+						case 1760:
+							changeCamZoom(1.2);
+						case 1822:
+							glitchEffectEvil(0.2);
+							glitchIncrease(3);
 						case 1824:
 							stagnantEvents('evil');
+							changeCamZoom(0.9);
+							vignetteEffect(0.7, 0.4);
+						case 1840 | 1856 | 1872 | 1878 | 1904 | 1936 | 1952 | 1968 | 1984 | 2000 | 2006 | 2032 | 2064:
+							addCamZoom(0.03, 0.03);
+						case 1948:
+							glitchEffectEvil(0.1);
+						case 2080:
+							changeCamZoom(1, 0.8);
+						case 2144:
+							changeCamZoom(1.2, 0.8);
+							vignetteEffect(0.75, 0.4);
+						case 2208:
+							changeCamZoom(1.4, 0.8);
+							vignetteEffect(0.8, 0.4);
+						case 2272:
+							evilStageSwap('evil', 2);
+							changeCamZoom(0.8);
+							glitchEffectEvil(0.3);
+							glitchIncrease(3);
+							vignetteEffect(0.9, 1);
+						case 2324:
+							doPoemTransition();
 						case 2336:
 							stagnantEvents('poem');
+							doPoemTransition();
+							changeCamZoom(1.2);
+							addCamZoom(0.03, 0.04);
+							vignetteEffect(0.2);
+						case 2592:
+							changeCamZoom(0.8);
+							addCamZoom(0.025, 0.05);
+						case 2631:
+							glitchEffectEvil(0.2);
+							glitchIncrease(1);
+						case 2640:
+							glitchEffectEvil(0.2);
+						case 2645:
+							doPoemTransition();
+						case 2648:
+							glitchEffectEvil(0.4);
+							glitchIncrease(3);
+						case 2656:
+							glitchIncrease(2);
+							doPoemTransition();
+							strumLineNotes.cameras = [camGame];
+							camGame.alpha = 0;
 					}
 				/*case 'markov':
 					switch (curStep)
@@ -8945,6 +9052,8 @@ class PlayState extends MusicBeatState
 						camFollow.x = 640;
 						if (isEvilUI)
 							camFollow.y = 510;
+						else if (isPoemUI)
+							camFollow.y = 460;
 						else
 							camFollow.y = 440;
 					default:
@@ -9379,24 +9488,6 @@ class PlayState extends MusicBeatState
 	}
 
 	// Bad Ending Function begin here
-	function funnyGlitch(duration:Float, sound:String):Void
-	{
-		// don't do anything if the user decided to be funny
-		if (duration <= 0)
-			return;
-
-		camGame.filtersEnabled = true;
-		FlxTween.tween(this, {staticAlpha: 1}, 0.5, {ease:FlxEase.circOut});
-
-		if (sound != '')
-			FlxG.sound.play(Paths.sound(sound));
-
-		new FlxTimer().start(duration, function(tmr:FlxTimer)
-		{
-			camGame.filtersEnabled = false;
-		});
-	}
-
 	function stagnantEvents(event:String)
 	{
 		isEvilUI = false;
@@ -9647,6 +9738,7 @@ class PlayState extends MusicBeatState
 	{
 		reloadHealthBarGraphic(style, offsetX1, offsetY1);
 		reloadTimeBarGraphic(style, offsetX2, offsetY2);
+		reloadHUDFont(style);
 	}
 
 	function reloadHealthBarGraphic(style:String, ?offsetX:Float = 0, ?offsetY:Float = 0)
@@ -9687,6 +9779,158 @@ class PlayState extends MusicBeatState
 		else positionDisplay.songPosBG.loadGraphic(Paths.image(path));
 
 		positionDisplay.songPosBG.offset.set(offsetX, offsetY);
+	}
+
+	function reloadHUDFont(style:String)
+	{
+		switch (style)
+		{
+			default: // ddto
+				positionDisplay.songText.font = LangUtil.getFont();
+				scoreTxt.font = LangUtil.getFont();
+				botPlayState.font = LangUtil.getFont("riffic");
+
+				scoreTxt.borderSize = 1.25;
+				botPlayState.borderSize = 1.25;
+
+			case 'fnf':
+				positionDisplay.songText.font = LangUtil.getFont("vcr");
+				scoreTxt.font = LangUtil.getFont("vcr");
+				botPlayState.font = LangUtil.getFont("vcr");
+
+				scoreTxt.borderSize = 1.25;
+				botPlayState.borderSize = 1.25;
+
+			case 'poem':
+				positionDisplay.songText.font = LangUtil.getFont("animal");
+				scoreTxt.font = LangUtil.getFont("animal");
+				botPlayState.font = LangUtil.getFont("animal");
+
+				scoreTxt.borderSize = 2;
+				botPlayState.borderSize = 2;
+		}
+	}
+
+	function addCamZoom(zoom1:Float = 0.015, zoom2:Float = 0.03)
+	{
+		FlxG.camera.zoom += zoom1;
+		camHUD.zoom += zoom2;
+	}
+
+	function changeCamZoom(?zoomShit:Float, ?tweenDur:Float = 0, ?forceBool:Bool = false)
+	{
+		if (zoomShit == null) zoomShit = defaultCamZoom;
+
+		if (tweenDur > 0)
+		{
+			FlxTween.tween(FlxG.camera, {zoom: zoomShit}, tweenDur, {
+				ease: FlxEase.cubeInOut,
+				onComplete: function(twn:FlxTween)
+				{
+					defaultCamZoom = zoomShit;
+				}
+			});
+		}
+		else
+		{
+			defaultCamZoom = zoomShit;
+			if (forceBool)
+				FlxG.camera.zoom = zoomShit;
+		}
+	}
+
+	function changeScrollSpeed(newSpeed:Float = 1, ?tweenDur:Float = 0)
+	{
+		if (constantScroll)
+			return;
+
+		var newValue:Float = SONG.speed * SaveData.scrollSpeed * newSpeed;
+
+		if (tweenDur <= 0) songSpeed = newValue;
+		else
+		{
+			songSpeedTween = FlxTween.tween(this, {songSpeed: newValue}, tweenDur, {
+				ease: FlxEase.linear,
+				onComplete: function(twn:FlxTween)
+				{
+					songSpeedTween = null;
+				}
+			});
+		}
+	}
+
+	function stagnantGlitch():Void
+	{
+		stagstatic.dance();
+		stagstatic.alpha = 1;
+	}
+
+	var poemTransitioning:Bool = false;
+	function doPoemTransition():Void
+	{
+		poemTransitioning = !poemTransitioning ? true : false;
+
+		if (poemTransitioning)
+		{
+			poemTransition.visible = true;
+			poemTransition.alpha = 1;
+			poemTransition.animation.play('poemtransition', true);
+		}
+		else
+		{
+			FlxTween.tween(poemTransition, {alpha: 0}, 0.25, {
+				ease: FlxEase.sineOut,
+				onComplete: function(twn:FlxTween)
+				{
+					poemTransition.alpha = 0;
+					poemTransition.visible = false;
+				}
+			});
+		}
+	}
+
+	function glitchEffectEvil(duration:Float = 0.5, ?sound:String):Void
+	{
+		if (sound.length > 0)
+			FlxG.sound.play(Paths.sound(sound));
+
+		// don't do anything if the user decided to be funny
+		if (!SaveData.shaders || duration <= 0)
+			return;
+
+		camGame.filtersEnabled = true;
+		FlxTween.tween(this, {staticAlpha: 1}, 0.5, {ease:FlxEase.circOut});
+
+		new FlxTimer().start(duration, function(tmr:FlxTimer)
+		{
+			camGame.filtersEnabled = false;
+		});
+	}
+
+	function glitchIncrease(glitchType:Int):Void
+	{
+		switch (glitchType)
+		{
+			case 1:
+				FlxTween.tween(daStatic, {alpha: 0.65}, 3.5, {ease: FlxEase.circOut});
+			case 2:
+				FlxTween.cancelTweensOf(daStatic);
+				daStatic.visible = false;
+			case 3:
+				FlxTween.cancelTweensOf(daStatic);
+				daStatic.visible = true;
+			case 4:
+				FlxTween.cancelTweensOf(daStatic);
+				remove(daStatic);
+		}
+	}
+
+	function vignetteEffect(newAlpha:Float = 0, ?tweenDur:Float = 0.0001):Void
+	{
+		FlxTween.cancelTweensOf(vignette);
+
+		if (tweenDur != 0)
+			FlxTween.tween(vignette, {alpha: newAlpha}, tweenDur, {ease: FlxEase.linear, onComplete: function(twn:FlxTween){}});
 	}
 	// Bad Ending Function end here
 

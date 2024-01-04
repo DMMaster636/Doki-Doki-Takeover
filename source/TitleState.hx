@@ -52,6 +52,8 @@ class TitleState extends MusicBeatState
 		startIntro();
 
 		super.create();
+
+		openfl.Lib.application.window.title = "Friday Night Funkin': Doki Doki Takeover!";
 	}
 
 	var dokiApp:FlxSprite;
