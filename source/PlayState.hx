@@ -145,7 +145,6 @@ class PlayState extends MusicBeatState
 	public static var gf:Character;
 	public static var boyfriend:Character;
 
-
 	public var BF_X:Float = 770;
 	public var BF_Y:Float = 100;
 	public var DAD_X:Float = 100;
@@ -435,6 +434,8 @@ class PlayState extends MusicBeatState
 	var darkScreen:FlxSprite;
 	var titleCard:FlxSprite;
 
+	var isBadEndingSong:Bool = false;
+
 	var altAnim:String = "";
 	var fc:Bool = true;
 
@@ -456,6 +457,7 @@ class PlayState extends MusicBeatState
 	public static var campaignScore:Int = 0;
 
 	var defaultCamZoom:Float = 1.05;
+	var defaultStageZoom:Float = 1.05;
 	var defaultHudZoom:Float = SaveData.zoom;
 
 	public static var daPixelZoom:Float = 6;
@@ -764,6 +766,7 @@ class PlayState extends MusicBeatState
 		}
 
 		defaultCamZoom = stageData.defaultZoom;
+		defaultStageZoom = stageData.defaultZoom;
 		//isPixelStage = stageData.isPixelStage; // we have isPixelUI instead lol
 		BF_X = stageData.boyfriend[0];
 		BF_Y = stageData.boyfriend[1];
@@ -2175,6 +2178,7 @@ class PlayState extends MusicBeatState
 
 		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
 		{
+			isBadEndingSong = true;
 			camGame.filters = [new ShaderFilter(staticlol)];
 			staticlol.alpha.value = [staticAlpha];
 			camGame.filtersEnabled = false;
@@ -2238,7 +2242,7 @@ class PlayState extends MusicBeatState
 		else
 			Character.loadaltcostume = true;
 
-		if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
+		if (isBadEndingSong)
 			Character.loadaltcostume = false;
 
 		// managing the bg dokis here
@@ -2371,12 +2375,14 @@ class PlayState extends MusicBeatState
 				addCharacterToList("bf-sad");
 				addCharacterToList("bf-poem");
 			case 'markov':
-				addCharacterToList("yuri-closet");
+				addCharacterToList("yuri-crazy-other");
 				addCharacterToList("yuri-closeup");
+				addCharacterToList("yuri-gore");
 				addCharacterToList("bf-sad");
 				addCharacterToList("gf-markov");
 				addCharacterToList('gameover-markov'); //Not a thingie
 				CoolUtil.precacheSound('stab');
+				CoolUtil.precacheSound('fall');
 			case 'home':
 				addCharacterToList("natsuki");
 				addCharacterToList("natsuki-sad");
@@ -2949,7 +2955,7 @@ class PlayState extends MusicBeatState
 		{
 			case 'stagnant' | 'markov' | 'home': //This is for the dark start thing
 				if (curSong.toLowerCase() == 'home') {
-					imdead = new FlxSprite(0, 0).loadGraphic(Paths.image('everyoneisdead', 'doki'));
+					imdead = new FlxSprite(0, 0).loadGraphic(Paths.image('badending/everyoneisdead', 'doki'));
 					imdead.scrollFactor.set();
 					imdead.cameras = [camHUD];
 					imdead.alpha = 0.00001;
@@ -2989,7 +2995,7 @@ class PlayState extends MusicBeatState
 					case 'crucify (yuri mix)':
 						preintrocutscene();
 
-					case 'hot air balloon' | 'shrinking violet' | 'shrinking violet-alt' | 'joyride' | 'our harmony' | 'you and me' | 'love n funkin' | 'love n funkin-alt' | 'constricted' | 'wilted' | 'takeover medley' | 'libitina' | 'drinks on me' | 'stagnant' | 'markov' | 'home':
+					case 'hot air balloon' | 'shrinking violet' | 'shrinking violet-alt' | 'joyride' | 'our harmony' | 'you and me' | 'love n funkin' | 'love n funkin-alt' | 'constricted' | 'wilted' | 'takeover medley' | 'libitina' | 'drinks on me' | 'stagnant':
 						customstart();
 				}
 			}
@@ -2997,7 +3003,7 @@ class PlayState extends MusicBeatState
 			{
 				switch (curSong.toLowerCase())
 				{
-					case 'dual demise' | 'your demise' | 'epiphany' | 'wilted' | 'you and me' | 'libitina' | 'takeover medley' | 'drinks on me' | 'our harmony' | 'love n funkin' | 'love n funkin-alt' | 'constricted' | 'stagnant' | 'markov' | 'home':
+					case 'dual demise' | 'your demise' | 'epiphany' | 'wilted' | 'you and me' | 'libitina' | 'takeover medley' | 'drinks on me' | 'our harmony' | 'love n funkin' | 'love n funkin-alt' | 'constricted' | 'stagnant':
 						customstart();
 					default:
 						startCountdown();
@@ -3009,7 +3015,7 @@ class PlayState extends MusicBeatState
 			switch (curSong.toLowerCase())
 			{
 				case 'dual demise' | 'your demise' | 'epiphany' | 'wilted' | 'you and me' | 'libitina' | 'takeover medley' | 'drinks on me' | 'our harmony' |
-					'love n funkin' | 'love n funkin-alt' | 'constricted' | 'stagnant' | 'markov' | 'home':
+					'love n funkin' | 'love n funkin-alt' | 'constricted' | 'stagnant':
 					customstart();
 				default:
 					startCountdown();
@@ -3310,12 +3316,6 @@ class PlayState extends MusicBeatState
 					playbackCutscene('beintro', 0);
 				else
 					startCountdown();
-			case 'markov':
-				dad.alpha = 0.001;
-				iconP1.changeIcon('bf-sad');
-				startCountdown();
-			case 'home':
-				startCountdown();
 			default:
 				startCountdown();
 		}
@@ -4009,7 +4009,7 @@ class PlayState extends MusicBeatState
 					}
 				}
 
-				if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
+				if (isBadEndingSong)
 				{
 					switch (swagCounter)
 					{
@@ -4211,6 +4211,18 @@ class PlayState extends MusicBeatState
 			FlxG.sound.music.time = length;
 			Conductor.songPosition = length;
 			vocals.time = length;
+		}
+
+		if (curSong.toLowerCase() == 'markov')
+		{
+			isEvilUI = true;
+			markovEvents('');
+			vignetteEffect(0.6);
+			changeUIVisibility(false);
+			changeStrumVisibility('dad', 0);
+			changeStrumVisibility('bf', 0);
+			dad.alpha = 0;
+			FlxTween.tween(darkScreen, {alpha: 0}, 6.5, {ease: FlxEase.linear});
 		}
 
 		if (sectionStart)
@@ -4471,6 +4483,24 @@ class PlayState extends MusicBeatState
 
 			strumLineNotes.add(babyArrow);
 			babyArrow.postAddedToGroup();
+
+			if (player == 0 && SONG.song.toLowerCase() == 'markov')
+			{
+				//Create blood stuff here
+				var offsetx:Float = babyArrow.x + -270;
+				var offsety:Float = babyArrow.y + -25;
+
+				var blood:FlxSprite = new FlxSprite(offsetx, offsety);
+				blood.frames = Paths.getSparrowAtlas('blooddrip', 'preload');
+				blood.antialiasing = SaveData.globalAntialiasing;
+				blood.animation.addByPrefix('idle', 'gone', 24, false);
+				blood.animation.addByPrefix('drip', 'blood', 24, false);
+				blood.animation.play('idle');
+				blood.scale.set(1.3, 1.3);
+				blood.alpha = targetAlpha;
+				blood.ID = i;
+				bloodStrums.add(blood);
+			}
 		}
 	}
 
@@ -5022,7 +5052,7 @@ class PlayState extends MusicBeatState
 			{
 				staticlol.iTime.value = [iTime];
 
-				if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
+				if (isBadEndingSong)
 					staticlol.alpha.value = [staticAlpha];
 			}
 
@@ -8329,22 +8359,180 @@ class PlayState extends MusicBeatState
 							strumLineNotes.cameras = [camGame];
 							camGame.alpha = 0;
 					}
-				/*case 'markov':
+				case 'markov':
 					switch (curStep)
 					{
-						case 1:
-							markovEvents(0);
-						case 117:
+						case 56:
 							dad.playAnim('appear', true);
+							dad.specialAnim = true;
+							FlxTween.tween(dad, {alpha: 1}, 1.1, {ease: FlxEase.circOut});
+						case 128:
+							changeStrumVisibility('dad', 0.5, 3);
+						case 192:
+							changeStrumVisibility('bf', 1, 2);
+						case 391:
+							dad.playAnim('leaves', true);
+							dad.specialAnim = true;
+						case 406:
+							changeStrumVisibility('dad', 0, 3);
+							changeStrumVisibility('bf', 0, 3);
+							FlxTween.tween(darkScreen, {alpha: 1}, 4, {ease: FlxEase.linear});
+							changeCamZoom(1.15, 4);
+						case 409:
+							FlxTween.tween(dad, {alpha: 0}, 0.5, {ease: FlxEase.circOut});
 						case 433:
-							markovEvents(2);
+							addcharacter("yuri-closeup", 1);
+						case 434:
+							changeScrollSpeed(1.35, 0.5);
+							glitchEffectEvil(0.4);
+							dad.alpha = 1;
+							FlxTween.cancelTweensOf(darkScreen);
+							darkScreen.alpha = 0;
+							screenShake(0.3, 0.024, 0.3, 0.01);
 						case 447:
-							set_songSpeed(2.8);
-						case 449:
-							markovEvents(1);
-					}*/
+							changeCamZoom(1.2, 0.1);
+						case 448:
+							metadataDisplay.tweenIn();
+							positionDisplay.tweenIn();
+							markovEvents('evil');
+							glitchEffectEvil(0.2);
+							vignetteEffect(0.2);
+							changeStrumVisibility('dad', 1);
+							changeStrumVisibility('bf', 1);
+							changeUIVisibility();
+							changeCamZoom(1.3);
+						case 464:
+							metadataDisplay.tweenOut();
+						case 704:
+							eyePopup(100, 520);
+							changeCamZoom(1.5, 1);
+						case 768:
+							eyePopup(710, 415);
+						case 832:
+							changeCamZoom(1.3, 1);
+						case 864:
+							eyePopup(550, 480);
+						case 880:
+							eyePopup(750, 530);
+						case 896:
+							changeCamZoom(1.7, 1);
+						case 960:
+							FlxTween.tween(darkScreen, {alpha: 1}, 1.4, {ease: FlxEase.linear});
+						case 980:
+							addcharacter("yuri-closeup", 1);
+						case 989:
+							markovEvents('');
+							vignetteEffect(0.5);
+							changeCamZoom(1, 0.2);
+						case 992:
+							darkScreen.alpha = 0;
+							darkScreen.cameras = [camGame2];
+							darkScreen.x -= 400;
+						case 1248:
+							changeCamZoom(1.1, 0.3);
+						case 1328:
+							eyePopup(620, 200);
+						case 1504:
+							darkScreen.alpha = 1;
+							markovEvents('evil');
+							addcharacter("gf-markov", 2);
+							changeCamZoom(1.3, 0.3);
+						case 1511:
+							FlxTween.tween(darkScreen, {alpha: 0.8}, 0.8, {ease: FlxEase.linear});
+						case 1632:
+							spawnRedEyes();
+							changeCamZoom(1.1, 0.3);
+							addCamZoom(0.015, 0.03);
+							glitchEffectEvil(0.3);
+						case 1648 | 1664 | 1680 | 1696 | 1712 | 1728 | 1744 | 2272 | 2278 | 2284 | 2290 | 2296 | 2302 | 2308 | 2314 |
+							2320 | 2324 | 2328 | 2332 | 2336 | 2342 | 2348 | 2354 | 2360 | 2366 | 2372 | 2378 | 2384 | 2388 | 2392 |
+							2396 | 2400 | 2406 | 2412 | 2418 | 2424 | 2430 | 2436 | 2442 | 2448 | 2452 | 2456 | 2460 | 2464 | 2470 |
+							2476 | 2482 | 2488 | 2494 | 2500 | 2506 | 2512 | 2516 | 2520 | 2524 | 2528 | 2784 | 2800 | 2808:
+							addCamZoom(0.015, 0.03);
+						case 1760:
+							spawnRedEyes();
+							changeCamZoom(1.3, 0.4);
+							FlxTween.tween(darkScreen, {alpha: 0}, 0.6, {ease: FlxEase.linear});
+							vignetteEffect(0.6, 1);
+						case 2016:
+							eyePopup(840, 430);
+							changeCamZoom(1.4, 0.6);
+						case 2048:
+							eyePopup(100, 220);
+							changeCamZoom(1.55, 0.6);
+						case 2080:
+							eyePopup(400, 240);
+						case 2112:
+							eyePopup(760, 560);
+							eyePopup(120, 120);
+							changeCamZoom(1.3, 0.6);
+						case 2144:
+							changeCamZoom(1.5, 0.4);
+						case 2267:
+							markovEvents('');
+							changeCamZoom(1);
+							glitchEffectEvil(0.2);
+							addcharacter("yuri-closeup", 1);
+							vignetteEffect(0.7);
+						case 2719:
+							glitchEffectEvil(0.2);
+							bloodDrips = true;
+						case 2720:
+							addcharacter("yuri-gore", 1);
+							yuriStabsHerself();
+							addCamZoom(0.015, 0.03);
+						case 2724 | 2740 | 2756 | 2772 | 2796:
+							addcharacter("yuri-closeup", 1);
+						case 2735:
+							glitchEffectEvil(0.2);
+						case 2736:
+							addcharacter("yuri-gore", 1);
+							yuriStabsHerself();
+							addCamZoom(0.015, 0.03);
+						case 2751:
+							glitchEffectEvil(0.2);
+						case 2752:
+							addcharacter("yuri-gore", 1);
+							yuriStabsHerself();
+							addCamZoom(0.015, 0.03);
+						case 2767:
+							glitchEffectEvil(0.2);
+						case 2768:
+							addcharacter("yuri-gore", 1);
+							addCamZoom(0.015, 0.03);
+						case 2791 | 2811:
+							glitchEffectEvil(0.2);
+						case 2792:
+							addcharacter("yuri-gore", 1);
+							yuriStabsHerself();
+							addCamZoom(0.015, 0.03);
+						case 2812:
+							addcharacter("yuri-gore", 1);
+						case 2816:
+							darkScreen.alpha = 1;
+							vignetteEffect(0);
+							changeStrumVisibility('dad', 0);
+							changeStrumVisibility('bf', 0);
+							changeUIVisibility(false);
+							bloodDrips = false;
+						case 2824:
+							changeStrumVisibility('bf', 1, 0.5);
+						case 2831:
+							addCamZoom(0.018, 0.03);
+						case 2832:
+							markovEvents("poem");
+							darkScreen.alpha = 0;
+						case 2864:
+							dad.playAnim('ded', true);
+							dad.specialAnim = true;
+						case 2880:
+							addcharacter("yuri-gore", 1);
+							camGame.alpha = 0;
+							yuriStabsHerself(0.001);
+							FlxG.sound.play(Paths.sound('fall'));
+					}
+			}
 		}
-	}
 
 		// have lyrics fade in and out if possible
 		if (hasLyrics && lyrics != null)
@@ -8366,8 +8554,7 @@ class PlayState extends MusicBeatState
 			"Error",
 			"Unauthorized",
 			"Unknown",
-			"Unspecified",
-			"MarkovEyes"
+			"Unspecified"
 		],
 		[
 			"Access",
@@ -9501,7 +9688,7 @@ class PlayState extends MusicBeatState
 
 				addcharacter("bf-doki-other", 0);
 				addcharacter("sayori-other", 1);
-				gf.playAnim('danceLeft', true);
+				gf.dance();
 			case 'evil':
 				isEvilUI = true;
 				evilStageSwap('evil');
@@ -9523,64 +9710,39 @@ class PlayState extends MusicBeatState
 		}
 	}
 
-	function markovEvents(swap:Int)
+	function markovEvents(event:String)
 	{
-		switch (swap)
+		switch (event)
 		{
-			case 0:
-				defaultCamZoom = 1;
+			default:
+				evilStageSwap('closet');
 
-				gf.visible = true;
-				addcharacter("yuri-closet", 1);
-				addcharacter("bf-sad", 0);
-
-				bg.visible = true;
 				boyfriend.visible = false;
-				dad.visible = true;
 				gf.visible = false;
-			case 1:
-				defaultCamZoom = 1.2;
+			case 'evil':
+				evilStageSwap('evil');
 
+				boyfriend.visible = true;
 				gf.visible = true;
-				addcharacter("yuri-crazy", 1);
-				addcharacter("bf-sad", 0);
 				gf.playAnim('necksnap', true);
-
-				bg.visible = true;
-				dad.visible = true;
-				boyfriend.visible = true;
-			case 2:
-				defaultCamZoom = 1;
-
-				gf.visible = false;
-				addcharacter("yuri-closeup", 1);
-				addcharacter("bf-sad", 0);
-
-				bg.visible = true;
-				boyfriend.visible = false;
-				dad.visible = true;
-			case 3:
-				defaultCamZoom = 0.75;
-
-				gf.visible = true;
-				addcharacter("yuri-crazy", 1);
-				addcharacter("bf-sad", 0);
-				addcharacter("gf-markov", 2);
-
-				bg.visible = true;
-				boyfriend.visible = true;
+				addcharacter("yuri-crazy-other", 1);
+			case 'poem':
+				evilStageSwap('markovpoem');
+				addcharacter("yuri-gore", 1);
 		}
 	}
 
 	function evilStageSwap(swap:String, ?swap2:Float)
 	{
-		//defaultCamZoom = defaultStageZoom;
-		//FlxG.camera.zoom = defaultStageZoom;
+		defaultCamZoom = defaultStageZoom;
+		FlxG.camera.zoom = defaultStageZoom;
 
 		// Considering all songs this should be shared
 		evilClubBG.visible = false;
 		evilClubBGScribbly.visible = false;
 		evilPoem.visible = false;
+
+		camFocus = true;
 
 		switch (curStage) // per stage stuff
 		{
@@ -9691,7 +9853,8 @@ class PlayState extends MusicBeatState
 				}
 				inthenotepad.visible = true;
 				notepadoverlay.visible = true;
-				//camFollow.set(650, 360);
+				camFocus = false;
+				camFollow.setPosition(650, 360);
 				boyfriend.x = 430;
 				boyfriend.y = -140;
 			case 'void':
@@ -9713,6 +9876,53 @@ class PlayState extends MusicBeatState
 					evilClubBGScribbly.alpha = 1;
 				}
 			});
+		}
+	}
+
+	function eyePopup(X:Float = 0, Y:Float = 0, ?randomize:Bool = false)
+	{
+		if (!SaveData.lowEnd)
+		{
+			var eyeX:Float = X;
+			var eyeY:Float = Y;
+
+			if (randomize)
+			{
+				eyeX = FlxG.random.float(0, FlxG.width);
+				eyeY = FlxG.random.float(0, FlxG.height);
+			}
+
+			var eye:FlxSprite = new FlxSprite(eyeX, eyeY);
+			eye.frames = Paths.getSparrowAtlas('badending/MarkovEyes', 'doki');
+			eye.animation.addByPrefix('idle', 'MarkovWindow', 24, false);
+			eye.animation.play('idle');
+			eye.antialiasing = SaveData.globalAntialiasing;
+			eye.scrollFactor.set();
+			eye.cameras = [camHUD];
+			add(eye);
+
+			// goku goes super saiyan
+			new FlxTimer().start(4.61, function(tmr:FlxTimer)
+			{
+				remove(eye);
+				eye.destroy();
+			});
+		}
+	}
+
+	var redEyesVisible:Bool = false;
+	function spawnRedEyes(?disappearTime:Float = 1)
+	{
+		if (funnyEyes != null)
+		{
+			if (!redEyesVisible)
+			{
+				funnyEyes.alpha = 1;
+				FlxG.camera.flash(FlxColor.RED, 0.5);
+			}
+			else FlxTween.tween(funnyEyes, {alpha: 0}, disappearTime, {ease: FlxEase.circOut});
+
+			redEyesVisible = redEyesVisible ? false : true;
 		}
 	}
 
@@ -9819,10 +10029,17 @@ class PlayState extends MusicBeatState
 
 	function changeCamZoom(?zoomShit:Float, ?tweenDur:Float = 0, ?forceBool:Bool = false)
 	{
-		if (zoomShit == null) zoomShit = defaultCamZoom;
+		if (zoomShit == null) zoomShit = defaultStageZoom;
 
 		if (tweenDur > 0)
 		{
+			FlxTween.tween(FlxG.camera, {zoom: zoomShit}, tweenDur, {
+				ease: FlxEase.cubeInOut,
+				onComplete: function(twn:FlxTween)
+				{
+					defaultCamZoom = zoomShit;
+				}
+			});
 			FlxTween.tween(FlxG.camera, {zoom: zoomShit}, tweenDur, {
 				ease: FlxEase.cubeInOut,
 				onComplete: function(twn:FlxTween)
@@ -9837,6 +10054,14 @@ class PlayState extends MusicBeatState
 			if (forceBool)
 				FlxG.camera.zoom = zoomShit;
 		}
+	}
+
+	function screenShake(duration1:Float = 0, intensity1:Float = 0, duration2:Float = 0, intensity2:Float = 0)
+	{
+		if (duration1 > 0 && intensity1 != 0)
+			camGame.shake(intensity1, duration1);
+		if (duration2 > 0 && intensity2 != 0)
+			camHUD.shake(intensity2, duration2);
 	}
 
 	function changeScrollSpeed(newSpeed:Float = 1, ?tweenDur:Float = 0)
@@ -9857,12 +10082,6 @@ class PlayState extends MusicBeatState
 				}
 			});
 		}
-	}
-
-	function stagnantGlitch():Void
-	{
-		stagstatic.dance();
-		stagstatic.alpha = 1;
 	}
 
 	var poemTransitioning:Bool = false;
@@ -9925,12 +10144,68 @@ class PlayState extends MusicBeatState
 		}
 	}
 
+	function stagnantGlitch():Void
+	{
+		stagstatic.dance();
+		stagstatic.alpha = 1;
+	}
+
 	function vignetteEffect(newAlpha:Float = 0, ?tweenDur:Float = 0.0001):Void
 	{
 		FlxTween.cancelTweensOf(vignette);
 
 		if (tweenDur != 0)
 			FlxTween.tween(vignette, {alpha: newAlpha}, tweenDur, {ease: FlxEase.linear, onComplete: function(twn:FlxTween){}});
+	}
+
+	function changeUIVisibility(isVisible:Bool = true):Void
+	{
+		healthBar.visible = isVisible;
+		healthBarBG.visible = isVisible;
+		iconP1.visible = isVisible;
+		iconP2.visible = isVisible;
+		scoreTxt.visible = isVisible;
+		positionDisplay.visible = isVisible;
+	}
+
+	function changeStrumVisibility(char:String, alph:Float = 1, timeItTakes:Float = 0.001):Void
+	{
+		var strum:FlxTypedGroup<StrumNote>;
+		var alphaVal:Float = alph;
+		var includeBlood:Bool = false;
+
+		switch (char)
+		{
+			case 'dad' | 'opponent':
+				{
+					strum = opponentStrums;
+					if (bloodDrips)
+						includeBlood = true;
+					if (SaveData.middleScroll)
+						alphaVal *= 0.35;
+				}
+			default:
+				strum = playerStrums;
+		}
+
+		for (i in 0...4)
+		{
+			FlxTween.cancelTweensOf(strum.members[i]);
+			FlxTween.tween(strum.members[i], {alpha: alphaVal}, timeItTakes, {ease: FlxEase.circOut});
+			if (includeBlood)
+			{
+				FlxTween.cancelTweensOf(bloodStrums.members[i]);
+				FlxTween.tween(bloodStrums.members[i], {alpha: alphaVal}, timeItTakes, {ease: FlxEase.circOut});
+			}
+		}
+	}
+
+	// *sad.ogg* :(
+	function yuriStabsHerself(bitch:Float = 0.5)
+	{
+		FlxTween.cancelTweensOf(screenPulse);
+		screenPulse.alpha = 1;
+		FlxTween.tween(screenPulse, {alpha: 0}, bitch, {ease: FlxEase.circOut});
 	}
 	// Bad Ending Function end here
 

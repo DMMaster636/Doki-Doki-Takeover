@@ -35,7 +35,7 @@
 		}
 	],
 	"no_antialiasing": false,
-	"image": "characters/MarkovGameOver",
+	"image": "characters/badending/MarkovGameOver",
 	"position": [
 		0,
 		0

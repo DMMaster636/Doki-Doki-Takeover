@@ -1,6 +1,6 @@
 {
 	"song": {
-		"player1": "sadbf",
+		"player1": "bf-sad",
 		"events": [],
 		"player2": "yuri-closet",
 		"notes": [
@@ -12560,7 +12560,7 @@
 				"mustHitSection": true
 			}
 		],
-		"gfVersion": "gf-realdoki",
+		"gfVersion": "gf-realdoki-other",
 		"song": "MARKOV",
 		"stage": "markov",
 		"needsVoices": true,
