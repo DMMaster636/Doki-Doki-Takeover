@@ -6,6 +6,7 @@ import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
 import flash.display.BitmapData;
+import flixel.math.FlxRect;
 
 using StringTools;
 
@@ -200,19 +201,16 @@ class Note extends FlxSprite
 
 	public function reloadNote(?prefix:String = '', ?texture:String = '', ?suffix:String = '')
 	{
-		if (prefix == null)
-			prefix = '';
-		if (texture == null)
-			texture = '';
-		if (suffix == null)
-			suffix = '';
+		if (prefix == null) prefix = '';
+		if (texture == null) texture = '';
+		if (suffix == null) suffix = '';
 
 		var skin:String = texture;
 
 		if (texture.length < 1)
 			skin = 'NOTE_assets';
 
-		if (noteStyle != 'pixel' && (noteType == 2 || noteType == 7))
+		if (noteType == 2 || noteType == 7)
 			if (noteStyle == 'sketch')
 				skin = 'poemUI/MARKOVNOTE_assets';
 			else
@@ -250,7 +248,7 @@ class Note extends FlxSprite
 				{
 					loadGraphic(Paths.image('pixelUI/' + blahblah));
 					width = width / 4;
-					height = height / 6;
+					height = height / 5;
 					loadGraphic(Paths.image('pixelUI/' + blahblah), true, Math.floor(width), Math.floor(height));
 				}
 
@@ -345,16 +343,16 @@ class Note extends FlxSprite
 			switch (noteType)
 			{
 				case 2 | 7:
-					animation.add('greenScroll', [GREEN_NOTE + 20]);
-					animation.add('redScroll', [RED_NOTE + 20]);
-					animation.add('blueScroll', [BLUE_NOTE + 20]);
-					animation.add('purpleScroll', [PURP_NOTE + 20]);
+					animation.add('greenScroll', [2, 2, 6, 10, 10, 6, 2, 2, 14, 18, 18, 14, 2, 2], 12, true);
+					animation.add('redScroll', [3, 3, 7, 11, 11, 7, 3, 3, 15, 19, 19, 15, 3, 3], 12, true);
+					animation.add('blueScroll', [1, 1, 5, 9, 9, 5, 1, 1, 13, 17, 17, 13, 1, 1], 12, true);
+					animation.add('purpleScroll', [0, 0, 4, 8, 8, 4, 0, 0, 12, 16, 16, 12, 0, 0], 12, true);
 				default:
 					animation.add('greenScroll', [GREEN_NOTE + 4]);
 					animation.add('redScroll', [RED_NOTE + 4]);
 					animation.add('blueScroll', [BLUE_NOTE + 4]);
 					animation.add('purpleScroll', [PURP_NOTE + 4]);
-			} 
+			}
 		}
 	}
 
@@ -396,5 +394,44 @@ class Note extends FlxSprite
 			if (alpha > 0.3)
 				alpha = 0.3;
 		}
+	}
+
+	public function clipToStrumNote(myStrum:StrumNote)
+	{
+		var center:Float = myStrum.y + offsetY + Note.swagWidth / 2;
+		if (isSustainNote && (mustPress || !ignoreNote) && (!mustPress || (wasGoodHit || (prevNote.wasGoodHit && !canBeHit))))
+		{
+			var swagRect:FlxRect = clipRect;
+			if (swagRect == null)
+				swagRect = new FlxRect(0, 0, frameWidth, frameHeight);
+
+			if (myStrum.downScroll)
+			{
+				if (y - offset.y * scale.y + height >= center)
+				{
+					swagRect.width = frameWidth;
+					swagRect.height = (center - y) / scale.y;
+					swagRect.y = frameHeight - swagRect.height;
+				}
+			}
+			else if (y + offset.y * scale.y <= center)
+			{
+				swagRect.y = (center - y) / scale.y;
+				swagRect.width = width / scale.x;
+				swagRect.height = (height / scale.y) - swagRect.y;
+			}
+			clipRect = swagRect;
+		}
+	}
+
+	@:noCompletion
+	override function set_clipRect(rect:FlxRect):FlxRect
+	{
+		clipRect = rect;
+
+		if (frames != null)
+			frame = frames.frames[animation.frameIndex];
+
+		return rect;
 	}
 }

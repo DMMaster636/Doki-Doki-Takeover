@@ -83,11 +83,10 @@ class HealthIcon extends FlxSprite
 		else
 		{
 			frames = Paths.getSparrowAtlas('icons/icon-' + daChar, 'preload');
-			animation.addByPrefix('idle', 'idle', 24, true);
-			animation.addByPrefix('losing', 'losing', 24, true);
-			animation.addByPrefix('winning', 'winning', 24, true);
+			animation.addByPrefix('idle', 'idle', 24, true, isPlayer);
+			animation.addByPrefix('losing', 'losing', 24, true, isPlayer);
+			animation.addByPrefix('winning', 'winning', 24, true, isPlayer);
 			animation.play('idle');
-			flipX = isPlayer;
 		}
 
 		if (SaveData.globalAntialiasing)

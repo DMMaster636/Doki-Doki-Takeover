@@ -2176,12 +2176,15 @@ class PlayState extends MusicBeatState
 				}
 		}
 
-		if ((SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home') && SaveData.shaders)
+		if (SONG.song.toLowerCase() == 'stagnant' || SONG.song.toLowerCase() == 'markov' || SONG.song.toLowerCase() == 'home')
 		{
 			isBadEndingSong = true;
-			camGame.filters = [new ShaderFilter(staticlol)];
-			staticlol.alpha.value = [staticAlpha];
-			camGame.filtersEnabled = false;
+			if (SaveData.shaders)
+			{
+				camGame.filters = [new ShaderFilter(staticlol)];
+				staticlol.alpha.value = [staticAlpha];
+				camGame.filtersEnabled = false;
+			}
 		}
 
 		//Gonna hide some of this stuff for performance reasons.
@@ -3092,9 +3095,7 @@ class PlayState extends MusicBeatState
 					introcutscene();
 				}
 				else
-				{
 					startCountdown();
-				}
 			case 'our harmony':
 				iconP2.changeIcon('our-harmony');
 				if (isStoryMode && showCutscene)
@@ -3174,9 +3175,7 @@ class PlayState extends MusicBeatState
 					#end
 				}
 				else
-				{
 					startCountdown();
-				}
 			case 'drinks on me':
 				// move jill behind gf
 				remove(dad);
@@ -3247,7 +3246,6 @@ class PlayState extends MusicBeatState
 				whiteflash.cameras = [camGame2];
 				add(whiteflash);
 
-				
 				startCountdown();
 			case 'wilted':
 				add(whiteflash);
@@ -3272,9 +3270,7 @@ class PlayState extends MusicBeatState
 					});
 				}
 				else
-				{
 					startCountdown();
-				}
 			case 'dual demise':
 				iconP2.changeIcon('dual-demise');
 				startCountdown();
@@ -3292,7 +3288,7 @@ class PlayState extends MusicBeatState
 
 				remove(gf);
 				remove(boyfriend);
-				
+
 				if (showCutscene && !ForceDisableDialogue)
 				{
 					remove(gf);
@@ -3426,9 +3422,7 @@ class PlayState extends MusicBeatState
 					add(dialogueBox);
 				}
 				else
-				{
 					endSong();
-				}
 			case 'you and me':
 				camHUD.visible = false;
 
@@ -3439,9 +3433,7 @@ class PlayState extends MusicBeatState
 						add(dialogueBox);
 					}
 					else
-					{
 						endSong();
-					}
 				});
 			case 'home':
 				playbackCutscene('beend', 0);
@@ -3454,9 +3446,7 @@ class PlayState extends MusicBeatState
 					add(dialogueBox);
 				}
 				else
-				{
 					endSong();
-				}
 		}
 		trace(inCutscene);
 	}
@@ -5682,27 +5672,8 @@ class PlayState extends MusicBeatState
 						goodNoteHit(daNote);
 				}
 
-				var center:Float = strumY + Note.swagWidth / 2;
-
-				// https://github.com/ShadowMario/FNF-PsychEngine/pull/12168
-				if (strumGroup.members[daNote.noteData].sustainReduce
-					&& daNote.isSustainNote
-					&& (daNote.mustPress || !daNote.ignoreNote)
-					&& (!daNote.mustPress || (daNote.wasGoodHit || (daNote.prevNote.wasGoodHit && !daNote.canBeHit))))
-				{
-					var swagRect:FlxRect = new FlxRect(0, 0, daNote.width / daNote.scale.x, daNote.height / daNote.scale.y);
-					var result:Int = 0;
-
-					if (strumScroll)
-						result = Std.int((daNote.y + daNote.height) - center);
-					else
-						result = Std.int(center - daNote.y);
-
-					if (result > 0)
-						swagRect.y = result / daNote.scale.y;
-
-					daNote.clipRect = swagRect;
-				}
+				var strum:StrumNote = strumGroup.members[daNote.noteData];
+				if(daNote.isSustainNote && strum.sustainReduce) daNote.clipToStrumNote(strum);
 
 				// Kill extremely late notes and cause misses
 				if (Conductor.songPosition > noteKillOffset + daNote.strumTime)

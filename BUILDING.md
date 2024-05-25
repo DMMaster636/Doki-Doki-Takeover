@@ -9,8 +9,14 @@ You also need to install additional libraries:
 ```text
 haxelib install hmm
 haxelib run hmm install
-haxelib git hxCodec https://github.com/polybiusproxy/hxCodec.git
-haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc.git
+```
+
+And incase you get errors with hxCodec, discord_rpc or flxanimate:
+
+```text
+haxelib git hxCodec https://github.com/polybiusproxy/hxCodec.git main
+haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc.git master
+haxelib git flxanimate https://github.com/Dot-Stuff/flxanimate master
 ```
 
 If you're on Linux, you'll need to install libvlc. If you are on Arch, the AUR package is outdated so you'll need to install vlc instead.

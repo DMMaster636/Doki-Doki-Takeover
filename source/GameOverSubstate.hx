@@ -36,6 +36,9 @@ class GameOverSubstate extends MusicBeatSubstate
 		if (!PlayState.isStoryMode && !libbie && PlayState.SONG.song.toLowerCase() != 'catfight')
 			mirrormode = SaveData.mirrorMode;
 
+		if (PlayState.SONG.song.toLowerCase() != 'markov')
+			markovGameover = false;
+
 		PlayState.mirrormode = false;
 
 		switch (goType)
